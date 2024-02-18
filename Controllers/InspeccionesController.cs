@@ -6,7 +6,7 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/inspecciones")]
+    [Route("api/Inspecciones")]
     [ApiController]
     public class InspeccionesController : ControllerBase
     {
@@ -15,16 +15,23 @@ namespace API.Inspecciones.Controllers
         public InspeccionesController(InspeccionesService inspeccionesService)
         {
             _inspeccionesService = inspeccionesService;
-        }
+        }        
 
-        [HttpPost("Index")]
+        [HttpPost("List")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> Index()
+        public async Task<ActionResult<dynamic>> List()
         {
             JsonReturn objReturn = new JsonReturn();
 
             try
             {
+                var lstInspecciones = await _inspeccionesService.List();
+
+                objReturn.Result = new
+                {
+                    Inspecciones = lstInspecciones,
+                };
+
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
@@ -39,31 +46,7 @@ namespace API.Inspecciones.Controllers
             }
 
             return objReturn.build();
-        }
-
-        [HttpPost("Create")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> Create()
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                objReturn.Success(SuccessMessage.REQUEST);
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
-        }
+        }        
 
         [HttpPost("Store")]
         [Authorize]
@@ -73,7 +56,7 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                objReturn.Result = await _inspeccionesService.Create(Globals.JsonData(data), User);
+                await _inspeccionesService.Create(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Nueva inspección";
                 objReturn.Message   = "Inspección creada exitosamente";
@@ -102,8 +85,35 @@ namespace API.Inspecciones.Controllers
             {
                 await _inspeccionesService.Update(Globals.JsonData(data), User);
 
-                objReturn.Title = "Actualización";
-                objReturn.Message = "Inspección actualizada exitosamente";
+                objReturn.Title     = "Actualización";
+                objReturn.Message   = "Inspección actualizada exitosamente";
+            }
+            catch (AppException appException)
+            {
+
+                objReturn.Exception(appException);
+            }
+            catch (Exception exception)
+            {
+
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
+        [HttpPost("Delete")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> Delete(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                await _inspeccionesService.Delete(Globals.JsonData(data), User);
+
+                objReturn.Title     = "Eliminado";
+                objReturn.Message   = "Inspección eliminada exitosamente";
             }
             catch (AppException appException)
             {

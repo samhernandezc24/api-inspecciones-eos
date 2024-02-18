@@ -20,8 +20,10 @@ namespace API.Inspecciones.Services
         {
             if (!await HttpReq.GetPrivilegio("INSPECCIONES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
 
+            var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
+            // GUARDAR INSPECCION
             Inspeccion objModel = new Inspeccion();
 
             objModel.IdInspeccion   = Guid.NewGuid().ToString();
@@ -29,6 +31,7 @@ namespace API.Inspecciones.Services
             objModel.Name           = Globals.ToString(data.name);    
             objModel.DisplayName    = Globals.ToString(data.displayName);
             objModel.Correo         = Globals.ToString(data.correo);
+            objModel.SetCreated(objUser);
 
             _context.Inspecciones.Add(objModel);
             await _context.SaveChangesAsync();
@@ -40,9 +43,24 @@ namespace API.Inspecciones.Services
             throw new NotImplementedException();
         }
 
-        public Task Delete(dynamic data, ClaimsPrincipal user)
+        public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            throw new NotImplementedException();
+            if (!await HttpReq.GetPrivilegio("INSPECCIONES_DELETE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
+
+            var objTransaction = _context.Database.BeginTransaction();
+
+            // ELIMINAR INSPECCION
+            string idInspeccion = Globals.ParseGuid(data.idInspeccion);
+            Inspeccion objModel = await Find(idInspeccion);
+
+            if (objModel.Deleted) { throw new ArgumentException("La inspección ya fue eliminada anteriormente"); }
+
+            objModel.Deleted = true;
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            _context.Inspecciones.Update(objModel);
+            await _context.SaveChangesAsync();
+            objTransaction.Commit();
         }
 
         public async Task<Inspeccion> Find(string id)
@@ -52,7 +70,8 @@ namespace API.Inspecciones.Services
 
         public async Task<Inspeccion> FindSelectorById(string id, string fields)
         {
-            return await _context.Inspecciones.Where(x => x.IdInspeccion == id).Select(Globals.BuildSelector<Inspeccion, Inspeccion>(fields)).FirstOrDefaultAsync();
+            return await _context.Inspecciones.AsNoTracking().Where(x => x.IdInspeccion == id)
+                            .Select(Globals.BuildSelector<Inspeccion, Inspeccion>(fields)).FirstOrDefaultAsync();
         }
 
         public async Task<List<dynamic>> List()

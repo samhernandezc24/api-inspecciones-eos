@@ -3,6 +3,7 @@ using API.Inspecciones.Models;
 using API.Inspecciones.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Workcube.Interfaces;
 using Workcube.Libraries;
 
 namespace API.Inspecciones.Services
@@ -20,8 +21,10 @@ namespace API.Inspecciones.Services
         {
             if (!await HttpReq.GetPrivilegio("INSPECCIONES_CATEGORIAS_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
 
-            var objTransaction = _context.Database.BeginTransaction();
+            var objUser         = Globals.GetUser(user);
+            var objTransaction  = _context.Database.BeginTransaction();
 
+            // GUARDAR CATEGORIA
             InspeccionCategoria objModel = new InspeccionCategoria();
 
             objModel.IdInspeccionCategoria  = Guid.NewGuid().ToString();
@@ -29,6 +32,7 @@ namespace API.Inspecciones.Services
             objModel.IdInspeccion           = Globals.ParseGuid(data.idInspeccion);
             objModel.InspeccionFolio        = Globals.ToString(data.inspeccionFolio);
             objModel.InspeccionName         = Globals.ToString(data.inspeccionName);
+            objModel.SetCreated(objUser);
 
             _context.InspeccionesCategorias.Add(objModel);
             await _context.SaveChangesAsync();
@@ -40,9 +44,24 @@ namespace API.Inspecciones.Services
             throw new NotImplementedException();
         }
 
-        public Task Delete(dynamic data, ClaimsPrincipal user)
+        public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            throw new NotImplementedException();
+            if (!await HttpReq.GetPrivilegio("INSPECCIONES_CATEGORIAS_DELETE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
+
+            var objTransaction = _context.Database.BeginTransaction();
+
+            // ELIMINAR CATEGORIA
+            string idInspeccionCategoria = Globals.ParseGuid(data.idInspeccionCategoria);
+            InspeccionCategoria objModel = await Find(idInspeccionCategoria);
+
+            if (objModel.Deleted) { throw new ArgumentException("La categoría ya fue eliminada anteriormente"); }
+
+            objModel.Deleted = true;
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            _context.InspeccionesCategorias.Update(objModel);
+            await _context.SaveChangesAsync();
+            objTransaction.Commit();
         }
 
         public async Task<InspeccionCategoria> Find(string id)
@@ -52,7 +71,8 @@ namespace API.Inspecciones.Services
 
         public async Task<InspeccionCategoria> FindSelectorById(string id, string fields)
         {
-            return await _context.InspeccionesCategorias.Where(x => x.IdInspeccionCategoria == id).Select(Globals.BuildSelector<InspeccionCategoria, InspeccionCategoria>(fields)).FirstOrDefaultAsync();
+            return await _context.InspeccionesCategorias.AsNoTracking().Where(x => x.IdInspeccionCategoria == id)
+                            .Select(Globals.BuildSelector<InspeccionCategoria, InspeccionCategoria>(fields)).FirstOrDefaultAsync();
         }
 
         public async Task<List<dynamic>> List()
@@ -62,10 +82,25 @@ namespace API.Inspecciones.Services
                             .OrderBy(x => x.CreatedFecha)
                             .Select(x => new
                             {
-                                IdInspeccionCategoria = x.IdInspeccionCategoria,
-                                Name = x.Name,
+                                IdInspeccionCategoria   = x.IdInspeccionCategoria,
+                                Name                    = x.Name,
                             })
                             .ToListAsync<dynamic>();
+        }
+
+        public async Task<List<dynamic>> List(string idInspeccion)
+        {
+            return await _context.InspeccionesCategorias
+                            .AsNoTracking()
+                            .Where(x => x.IdInspeccion == idInspeccion && !x.Deleted)
+                            .OrderBy(x => x.CreatedFecha)
+                            .Select(x => new
+                            {
+                                IdInspeccionCategoria   = x.IdInspeccionCategoria,
+                                Name                    = x.Name,
+                            })
+                            .ToListAsync<dynamic>();
+                    
         }
 
         public Task<byte[]> Reporte(dynamic data)

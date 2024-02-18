@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/unidades/registros")]
+    [Route("api/Unidades/Registros")]
     [ApiController]
     public class UnidadesRegistrosController : ControllerBase
     {

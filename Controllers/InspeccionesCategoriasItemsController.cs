@@ -7,7 +7,7 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/inspecciones/categorias/items")]
+    [Route("api/Inspecciones/Categorias/Items")]
     [ApiController]
     public class InspeccionesCategoriasItemsController : ControllerBase
     {
@@ -42,14 +42,21 @@ namespace API.Inspecciones.Controllers
             return objReturn.build();
         }
 
-        [HttpPost("Create")]
+        [HttpPost("List")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> Create()
+        public async Task<ActionResult<dynamic>> List()
         {
             JsonReturn objReturn = new JsonReturn();
 
             try
             {
+                List<dynamic> lstInspeccionesCategoriasItems = await _inspeccionesCategoriasItemsService.List();
+
+                objReturn.Result = new
+                {
+                    InspeccionesCategoriasItems = lstInspeccionesCategoriasItems,
+                };
+
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
@@ -105,6 +112,33 @@ namespace API.Inspecciones.Controllers
 
                 objReturn.Title     = "Actualización";
                 objReturn.Message   = "Formulario actualizado exitosamente";
+            }
+            catch (AppException appException)
+            {
+
+                objReturn.Exception(appException);
+            }
+            catch (Exception exception)
+            {
+
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
+        [HttpPost("Delete")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> Delete(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                await _inspeccionesCategoriasItemsService.Delete(Globals.JsonData(data), User);
+
+                objReturn.Title     = "Eliminado";
+                objReturn.Message   = "Categoría eliminada exitosamente";
             }
             catch (AppException appException)
             {
