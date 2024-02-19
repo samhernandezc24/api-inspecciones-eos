@@ -19,19 +19,18 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
+            //if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
 
-            var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
             Unidad objModel = new Unidad();
 
             objModel.IdUnidad           = Guid.NewGuid().ToString();
-            objModel.NumeroEconomico    = Globals.ToString(data.numeroEconomico);
-            objModel.Descripcion        = Globals.ToString(data.descripcion);    
+            objModel.NumeroEconomico    = Globals.ToUpper(data.numeroEconomico);
+            objModel.Descripcion        = Globals.ToUpper(data.descripcion);    
             objModel.IdUnidadTipo       = Globals.ParseGuid(data.idUnidadTipo);
-            objModel.UnidadTipoName     = Globals.ToString(data.unidadTipoName);
-            objModel.SetCreated(objUser);
+            objModel.UnidadTipoName     = Globals.ToUpper(data.unidadTipoName);
+            objModel.SetCreated(Globals.GetUser(user));
 
             _context.Unidades.Add(objModel);
             await _context.SaveChangesAsync();
@@ -81,7 +80,7 @@ namespace API.Inspecciones.Services
         public async Task<List<dynamic>> Predictive(dynamic data)
         {
             // INCLUDES
-            string fields = "IdUnidad,NumeroEconomico,IdUnidadTipo,UnidadTipoName";
+            string fields = "IdUnidad,NumeroEconomico,Descripcion,IdUnidadTipo,UnidadTipoName";
 
             // QUERY
             var lstItems = _context.Unidades
@@ -118,6 +117,7 @@ namespace API.Inspecciones.Services
                     {
                         IdUnidad        = item.IdUnidad,
                         NumeroEconomico = item.NumeroEconomico,
+                        Descripcion     = item.Descripcion,
                         IdUnidadTipo    = item.IdUnidadTipo,
                         UnidadTipoName  = item.UnidadTipoName,
                         IsTemporal      = true,
@@ -130,7 +130,7 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
+            //if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
 
             var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();

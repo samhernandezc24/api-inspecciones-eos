@@ -7,7 +7,7 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Unidades/Temporales")]
+    [Route("api/Inspecciones/Unidades/Temporales")]
     [ApiController]
     public class UnidadesController : ControllerBase
     {
@@ -88,7 +88,7 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                objReturn.Result = await _unidadesService.Create(Globals.JsonData(data), User);
+                await _unidadesService.Create(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Nueva unidad temporal";
                 objReturn.Message   = "Unidad temporal creada exitosamente";

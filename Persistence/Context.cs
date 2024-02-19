@@ -25,6 +25,7 @@ namespace API.Inspecciones.Persistence
 
             // INSPECCIONES UNIDADES
             modelBuilder.Entity<InspeccionUnidad>().HasIndex(item => item.Folio).IsUnique();
+            modelBuilder.Entity<InspeccionUnidad>().HasOne(item => item.Inspeccion).WithMany(item => item.InspeccionesUnidades).HasForeignKey(item => item.IdInspeccion).OnDelete(DeleteBehavior.Restrict);
 
             // INSPECCIONES UNIDADES CATEGORIAS
             modelBuilder.Entity<InspeccionUnidadCategoria>().HasOne(item => item.InspeccionUnidad).WithMany(item => item.InspeccionesUnidadesCategorias).HasForeignKey(item => item.IdInspeccionUnidad).OnDelete(DeleteBehavior.Restrict);

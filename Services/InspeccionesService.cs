@@ -18,7 +18,7 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            if (!await HttpReq.GetPrivilegio("INSPECCIONES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
+            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
 
             var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
@@ -45,7 +45,7 @@ namespace API.Inspecciones.Services
 
         public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            if (!await HttpReq.GetPrivilegio("INSPECCIONES_DELETE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
+            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_DELETE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
 
             var objTransaction = _context.Database.BeginTransaction();
 
@@ -95,7 +95,7 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            if (!await HttpReq.GetPrivilegio("INSPECCIONES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
+            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
 
             var objTransaction = _context.Database.BeginTransaction();
 
