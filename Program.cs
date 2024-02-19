@@ -16,10 +16,12 @@ string connectionString = builder.Environment.IsProduction() ? "Production" : "D
 builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString(connectionString), x => x.MigrationsHistoryTable("__EFMigrationsHistory", "inspeccion")));
 
 // Registrar servicios.
+builder.Services.AddScoped<FormulariosTiposService, FormulariosTiposService>();
 builder.Services.AddScoped<InspeccionesCategoriasItemsService, InspeccionesCategoriasItemsService>();
 builder.Services.AddScoped<InspeccionesCategoriasService, InspeccionesCategoriasService>();
 builder.Services.AddScoped<InspeccionesService, InspeccionesService>();
-builder.Services.AddScoped<UnidadesRegistrosService, UnidadesRegistrosService>();
+builder.Services.AddScoped<InspeccionesUnidadesFicherosService, InspeccionesUnidadesFicherosService>();
+builder.Services.AddScoped<InspeccionesUnidadesService, InspeccionesUnidadesService>();
 builder.Services.AddScoped<UnidadesService, UnidadesService>();
 
 // Agregar servicios al contenedor.

@@ -1,4 +1,4 @@
-﻿using API.Inspecciones.Interfaces;
+﻿using API.Inspecciones.Models;
 using API.Inspecciones.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,73 +7,54 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Unidades/Temporales")]
+    [Route("api/Inspecciones/Unidades/Ficheros")]
     [ApiController]
-    public class UnidadesController : ControllerBase
+    public class InspeccionesUnidadesFicherosController : ControllerBase
     {
-        private readonly UnidadesService _unidadesService;
+        private readonly InspeccionesUnidadesService _inspeccionesUnidadesService;
+        private readonly InspeccionesUnidadesFicherosService _inspeccionesUnidadesFicherosService;
 
-        public UnidadesController(UnidadesService unidadesService)
+        public InspeccionesUnidadesFicherosController(InspeccionesUnidadesService inspeccionesUnidadesService, InspeccionesUnidadesFicherosService inspeccionesUnidadesFicherosService)
         {
-            _unidadesService = unidadesService;
+            _inspeccionesUnidadesService            = inspeccionesUnidadesService;
+            _inspeccionesUnidadesFicherosService    = inspeccionesUnidadesFicherosService;
         }
 
-        [HttpPost("Index")]
+        [HttpPost("List")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> Index()
+        public async Task<ActionResult<dynamic>> List(JsonObject data)
         {
             JsonReturn objReturn = new JsonReturn();
 
             try
             {
-                var lstUnidadesTipos = await HttpReq.Post("unidades", "unidades/tipos/list");
+                var objData                 = Globals.JsonData(data);
+                string idInspeccionUnidad   = Globals.ParseGuid(objData.idInspeccionUnidad);
+
+                InspeccionUnidad objModel = await _inspeccionesUnidadesService.FindSelectorById(idInspeccionUnidad, "Folio,UnidadNumeroEconomico");
+
+                var objInspeccionUnidad = new
+                {
+                    Folio                   = objModel.Folio,
+                    UnidadNumeroEconomico   = objModel.UnidadNumeroEconomico,
+                };
+
+                var objFotos = await _inspeccionesUnidadesFicherosService.List(idInspeccionUnidad);
 
                 objReturn.Result = new
                 {
-                    UnidadesTipos = lstUnidadesTipos,
+                    InspeccionUnidad    = objInspeccionUnidad,
+                    FotosGenerales      = objFotos,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
-        }
-
-        [HttpPost("Create")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> Create()
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                var lstUnidadesTipos = await HttpReq.Post("unidades", "unidadestipos/list");
-
-                objReturn.Result = new
-                {
-                    UnidadesTipos = lstUnidadesTipos,
-                };
-
-                objReturn.Success(SuccessMessage.REQUEST);
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -88,36 +69,7 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                objReturn.Result = await _unidadesService.Create(Globals.JsonData(data), User);
-
-                objReturn.Title     = "Nueva unidad temporal";
-                objReturn.Message   = "Unidad temporal creada exitosamente";
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
-        }
-
-        [HttpPost("PredictiveEOS")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> PredictiveEOS(JsonObject data)
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                var objData = Globals.JsonData(data);
-
-                objReturn.Result = await _unidadesService.Predictive(objData);
+                await _inspeccionesUnidadesFicherosService.Create(Globals.JsonData(data), User);
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
@@ -141,19 +93,42 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _unidadesService.Update(Globals.JsonData(data), User);
+                await _inspeccionesUnidadesFicherosService.Update(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Actualización";
-                objReturn.Message   = "Unidad temporal actualizada exitosamente";
+                objReturn.Message   = "Datos actualizados exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
 
+            return objReturn.build();
+        }
+
+        [HttpPost("Delete")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> Delete(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                await _inspeccionesUnidadesFicherosService.Delete(Globals.JsonData(data), User);
+
+                objReturn.Title     = "Eliminado";
+                objReturn.Message   = "Foto eliminada exitosamente";
+            }
+            catch (AppException appException)
+            {
+                objReturn.Exception(appException);
+            }
+            catch (Exception exception)
+            {
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 

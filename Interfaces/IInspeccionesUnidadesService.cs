@@ -3,5 +3,5 @@ using Workcube.Interfaces;
 
 namespace API.Inspecciones.Interfaces
 {
-    public interface IUnidadesRegistrosService : IGlobal<UnidadRegistro> { }
+    public interface IInspeccionesUnidadesService : IGlobal<InspeccionUnidad> { }
 }
