@@ -19,10 +19,9 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
-
             var objTransaction  = _context.Database.BeginTransaction();
 
+            // CREAR UNIDAD TEMPORAL
             Unidad objModel = new Unidad();
 
             objModel.IdUnidad           = Guid.NewGuid().ToString();
@@ -30,6 +29,7 @@ namespace API.Inspecciones.Services
             objModel.Descripcion        = Globals.ToUpper(data.descripcion);    
             objModel.IdUnidadTipo       = Globals.ParseGuid(data.idUnidadTipo);
             objModel.UnidadTipoName     = Globals.ToUpper(data.unidadTipoName);
+
             objModel.SetCreated(Globals.GetUser(user));
 
             _context.Unidades.Add(objModel);
@@ -42,9 +42,22 @@ namespace API.Inspecciones.Services
             throw new NotImplementedException();
         }
 
-        public Task Delete(dynamic data, ClaimsPrincipal user)
+        public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            throw new NotImplementedException();
+            var objTransaction = _context.Database.BeginTransaction();
+
+            // ELIMINAR UNIDAD TEMPORAL
+            string idUnidad = Globals.ParseGuid(data.idUnidad);
+            var objModel    = await Find(idUnidad);    
+
+            if (objModel.Deleted) { throw new ArgumentException("La unidad temporal ya había sido eliminada anteriormente"); }
+
+            objModel.Deleted = true;
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            _context.Unidades.Update(objModel);
+            await _context.SaveChangesAsync();
+            objTransaction.Commit();
         }
 
         public async Task<Unidad> Find(string id)
@@ -65,6 +78,7 @@ namespace API.Inspecciones.Services
                             .Select(x => new
                             {
                                 IdUnidad        = x.IdUnidad,
+                                Descripcion     = x.Descripcion,
                                 NumeroEconomico = x.NumeroEconomico,
                                 IdUnidadTipo    = x.IdUnidadTipo,
                                 UnidadTipoName  = x.UnidadTipoName,
@@ -115,12 +129,12 @@ namespace API.Inspecciones.Services
                 {
                     lstRows.Add(new
                     {
-                        IdUnidad        = item.IdUnidad,
-                        NumeroEconomico = item.NumeroEconomico,
-                        Descripcion     = item.Descripcion,
-                        IdUnidadTipo    = item.IdUnidadTipo,
-                        UnidadTipoName  = item.UnidadTipoName,
-                        IsTemporal      = true,
+                        IdUnidad            = item.IdUnidad,
+                        NumeroEconomico     = item.NumeroEconomico,
+                        Descripcion         = item.Descripcion,
+                        IdUnidadTipo        = item.IdUnidadTipo,
+                        UnidadTipoName      = item.UnidadTipoName,
+                        IsUnidadTemporal    = true,
                     });
                 });
             }
@@ -130,18 +144,21 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("UNIDADES_TEMPORALES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
-
-            var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
-            Unidad objModel = new Unidad();
+            // ACTUALIZAR UNIDAD TEMPORAL
+            string idUnidad = Globals.ParseGuid(data.idUnidad);
+            Unidad objModel = await Find(idUnidad);
 
-            objModel.NumeroEconomico    = Globals.ToString(data.numeroEconomico);
-            objModel.Descripcion        = Globals.ToString(data.descripcion);    
+            objModel.NumeroEconomico    = Globals.ToUpper(data.numeroEconomico);
+            objModel.Descripcion        = Globals.ToUpper(data.descripcion);    
             objModel.IdUnidadTipo       = Globals.ParseGuid(data.idUnidadTipo);
-            objModel.UnidadTipoName     = Globals.ToString(data.unidadTipoName);
-            objModel.SetUpdated(objUser);
+            objModel.UnidadTipoName     = Globals.ToUpper(data.unidadTipoName);
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == objModel.NumeroEconomico.ToUpper() && !x.Deleted && x.IdUnidad != idUnidad).Any();
+
+            if (findUnidad) { throw new ArgumentException("El número económico que intenta registrar ya existe en la base de datos"); }           
 
             _context.Unidades.Update(objModel);
             await _context.SaveChangesAsync();

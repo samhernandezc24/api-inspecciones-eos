@@ -18,38 +18,50 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_UNIDADES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
-
+            var objUser = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
-            // GUARDAR INSPECCION UNIDAD
+            // GUARDAR INSPECCION DE LA UNIDAD
             InspeccionUnidad objModel = new InspeccionUnidad();
 
-            objModel.IdInspeccionUnidad     = Guid.NewGuid().ToString();
-            objModel.IdBase                 = Globals.ParseGuid(data.idBase);
-            objModel.IdBase                 = Globals.ToString(data.baseName);
-            objModel.IdUnidad               = Globals.ParseGuid(data.idUnidad);
-            objModel.UnidadNumeroEconomico  = Globals.ToString(data.unidadNumeroEconomico);
-            objModel.Folio                  = Globals.ToString(data.folio);
-            objModel.IsUnidadTemporal       = Globals.ParseBool(data.isUnidadTemporal);
-            objModel.Fecha                  = Globals.DateTime(data.fecha);
-            objModel.IdInspeccion           = Globals.ParseGuid(data.idInspeccion);
-            objModel.InspeccionFolio        = Globals.ToString(data.inspeccionFolio);
-            objModel.InspeccionName         = Globals.ToString(data.inspeccionName);
-            objModel.IdRequerimiento        = Globals.ParseGuid(data.idRequerimiento);
-            objModel.RequerimientoFolio     = Globals.ToString(data.requerimientoFolio);
-            objModel.InspeccionName         = Globals.ToString(data.inspeccionName);
-            objModel.TipoPlataforma         = Globals.ToString(data.tipoPlataforma);
-            objModel.NumeroSerie            = Globals.ToString(data.numeroSerie);
-            objModel.Marca                  = Globals.ToString(data.marca);
-            objModel.Modelo                 = Globals.ToString(data.modelo);
-            objModel.Horometro              = Globals.ParseInt(data.horometro);
-            objModel.Odometro               = Globals.ParseInt(data.odometro);
-            objModel.Locacion               = Globals.ToString(data.locacion);
-            objModel.Capacidad              = Globals.ParseInt(data.capacidad);
-            objModel.Observaciones          = Globals.ToString(data.observaciones);
-            objModel.FirmaOperador          = Globals.ToString(data.firmaOperador);
-            objModel.FirmaVerificador       = Globals.ToString(data.firmaVerificador);
+            objModel.IdInspeccionUnidad             = Guid.NewGuid().ToString();
+            objModel.IdBase                         = Globals.ParseGuid(data.idBase);
+            objModel.BaseName                       = Globals.ToUpper(data.baseName);
+            objModel.IdUnidad                       = Globals.ParseGuid(data.idUnidad);
+            objModel.UnidadNumeroEconomico          = Globals.ToUpper(data.unidadNumeroEconomico);
+            objModel.IsUnidadTemporal               = Globals.ParseBool(data.isUnidadTemporal);
+            objModel.IdUnidadMarca                  = Globals.ParseGuid(data.idUnidadMarca);
+            objModel.UnidadMarcaName                = Globals.ToUpper(data.unidadMarcaName);
+            objModel.Fecha                          = DateTime.Now;
+            objModel.IdInspeccion                   = Globals.ParseGuid(data.idInspeccion);
+            objModel.InspeccionFolio                = Globals.ToUpper(data.inspeccionFolio);
+            objModel.InspeccionName                 = Globals.ToUpper(data.inspeccionName);
+            objModel.FechaInspeccionInicial         = DateTime.Now;
+            objModel.FechaInspeccionInicialUpdate   = DateTime.Now;
+            objModel.IdUserInspeccionInicial        = objUser.Id;
+            objModel.UserInspeccionInicialName      = objUser.Nombre;
+            objModel.FechaInspeccionFinal           = Globals.DateTime(data.fechaInspeccionFinal);
+            objModel.FechaInspeccionFinalUpdate     = Globals.DateTime(data.fechaInspeccionFinal);
+            objModel.IdUserInspeccionFinal          = objUser.Id;
+            objModel.UserInspeccionFinalName        = objUser.Nombre;
+            objModel.IdRequerimiento                = Globals.ParseGuid(data.idRequerimiento);
+            objModel.RequerimientoFolio             = Globals.ToUpper(data.requerimientoFolio);
+            objModel.IdUnidadPlacaTipo              = Globals.ParseGuid(data.idUnidadPlacaTipo);
+            objModel.UnidadPlacaTipoName            = Globals.ToUpper(data.unidadPlacaTipoName);
+            objModel.Placa                          = Globals.ToUpper(data.placa);
+            objModel.NumeroSerie                    = Globals.ToUpper(data.numeroSerie);
+            objModel.AnioEquipo                     = Globals.ToUpper(data.anioEquipo);
+            objModel.Modelo                         = Globals.ToUpper(data.modelo);
+            objModel.Capacidad                      = Globals.ParseDecimal(data.capacidad);
+            objModel.Observaciones                  = Globals.ToUpper(data.observaciones);
+            objModel.Odometro                       = Globals.ParseInt(data.odometro);
+            objModel.Horometro                      = Globals.ParseInt(data.horometro);
+            objModel.TipoPlataforma                 = Globals.ToUpper(data.tipoPlataforma);
+            objModel.Locacion                       = Globals.ToUpper(data.locacion);
+            objModel.FirmaOperador                  = Globals.ToUpper(data.firmaOperador);
+            objModel.FirmaVerificador               = Globals.ToUpper(data.firmaVerificador);
+
+            NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));
 
             _context.InspeccionesUnidades.Add(objModel);
@@ -59,37 +71,57 @@ namespace API.Inspecciones.Services
 
         public async Task CreateFromRequerimientos(dynamic data, ClaimsPrincipal user)
         {
+            var objUser = Globals.GetUser(user);
             InspeccionUnidad objModel = new InspeccionUnidad();
 
-            objModel.IdInspeccionUnidad     = Guid.NewGuid().ToString();
-            objModel.IdBase                 = Globals.ParseGuid(data.idBase);
-            objModel.IdBase                 = Globals.ToString(data.baseName);
-            objModel.IdUnidad               = Globals.ParseGuid(data.idUnidad);
-            objModel.UnidadNumeroEconomico  = Globals.ToString(data.unidadNumeroEconomico);
-            objModel.Folio                  = Globals.ToString(data.folio);
-            objModel.IsUnidadTemporal       = Globals.ParseBool(data.isUnidadTemporal);
-            objModel.Fecha                  = Globals.DateTime(data.fecha);
-            objModel.IdInspeccion           = Globals.ParseGuid(data.idInspeccion);
-            objModel.InspeccionFolio        = Globals.ToString(data.inspeccionFolio);
-            objModel.InspeccionName         = Globals.ToString(data.inspeccionName);
-            objModel.IdRequerimiento        = Globals.ParseGuid(data.idRequerimiento);
-            objModel.RequerimientoFolio     = Globals.ToString(data.requerimientoFolio);
-            objModel.InspeccionName         = Globals.ToString(data.inspeccionName);
-            objModel.TipoPlataforma         = Globals.ToString(data.tipoPlataforma);
-            objModel.NumeroSerie            = Globals.ToString(data.numeroSerie);
-            objModel.Marca                  = Globals.ToString(data.marca);
-            objModel.Modelo                 = Globals.ToString(data.modelo);
-            objModel.Horometro              = Globals.ParseInt(data.horometro);
-            objModel.Odometro               = Globals.ParseInt(data.odometro);
-            objModel.Locacion               = Globals.ToString(data.locacion);
-            objModel.Capacidad              = Globals.ParseInt(data.capacidad);
-            objModel.Observaciones          = Globals.ToString(data.observaciones);
-            objModel.FirmaOperador          = Globals.ToString(data.firmaOperador);
-            objModel.FirmaVerificador       = Globals.ToString(data.firmaVerificador);
+            objModel.IdInspeccionUnidad             = Guid.NewGuid().ToString();
+            objModel.IdBase                         = Globals.ParseGuid(data.idBase);
+            objModel.BaseName                       = Globals.ToUpper(data.baseName);
+            objModel.IdUnidad                       = Globals.ParseGuid(data.idUnidad);
+            objModel.UnidadNumeroEconomico          = Globals.ToUpper(data.unidadNumeroEconomico);
+            objModel.IsUnidadTemporal               = Globals.ParseBool(data.isUnidadTemporal);
+            objModel.Fecha                          = DateTime.Now;
+            objModel.IdInspeccion                   = Globals.ParseGuid(data.idInspeccion);
+            objModel.InspeccionFolio                = Globals.ToUpper(data.inspeccionFolio);
+            objModel.InspeccionName                 = Globals.ToUpper(data.inspeccionName);
+            objModel.FechaInspeccionInicial         = DateTime.Now;
+            objModel.FechaInspeccionInicialUpdate   = DateTime.Now;
+            objModel.IdUserInspeccionInicial        = objUser.Id;
+            objModel.UserInspeccionInicialName      = objUser.Nombre;
+            objModel.IdRequerimiento                = Globals.ParseGuid(data.idRequerimiento);
+            objModel.RequerimientoFolio             = Globals.ToString(data.requerimientoFolio);
+            objModel.IdUnidadPlacaTipo              = Globals.ParseGuid(data.idUnidadPlacaTipo);
+            objModel.UnidadPlacaTipoName            = Globals.ToUpper(data.unidadPlacaTipoName);
+            objModel.Placa                          = Globals.ToUpper(data.placa);
+            objModel.NumeroSerie                    = Globals.ToUpper(data.numeroSerie);
+            objModel.AnioEquipo                     = Globals.ToUpper(data.anioEquipo);
+            objModel.Modelo                         = Globals.ToUpper(data.modelo);
+            objModel.Capacidad                      = Globals.ParseDecimal(data.capacidad);
+            objModel.Odometro                       = Globals.ParseInt(data.odometro);
+            objModel.Horometro                      = Globals.ParseInt(data.horometro);
+            objModel.Locacion                       = Globals.ToUpper(data.locacion);
+
+            NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));
 
             _context.InspeccionesUnidades.Add(objModel);
             await _context.SaveChangesAsync();
+        }
+
+        private void NextFolio(ref InspeccionUnidad objInspeccionUnidad)
+        {
+            var anio        = DateTime.Now.Year.ToString().Substring(2, 2);
+            var contains    = "INS" + anio + "-VH";
+
+            int indexKey = NextIndexKey(contains);
+
+            string folio = contains + "-" + indexKey.ToString().PadLeft(6, '0');
+            objInspeccionUnidad.Folio = folio;
+        }
+
+        public int NextIndexKey(string contains)
+        {
+            return _context.InspeccionesUnidades.Where(item => item.Folio.Contains(contains)).Count() + 1;
         }
 
         public Task<dynamic> DataSource(dynamic data, ClaimsPrincipal user)
@@ -100,6 +132,30 @@ namespace API.Inspecciones.Services
         public Task Delete(dynamic data, ClaimsPrincipal user)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task Finalizar(dynamic data, ClaimsPrincipal user)
+        {
+            var objTransaction = _context.Database.BeginTransaction();
+
+            string idInspeccionUnidad = Globals.ParseGuid(data.idInspeccionUnidad);
+
+            InspeccionUnidad objModel = await Find(idInspeccionUnidad);
+
+            switch (objModel.IdInspeccionUnidadEstatus)
+            {
+                case "ea52bdfd-8af6-4f5a-b182-2b99e554eb34":
+                    throw new ArgumentException("La inspección de la unidad ya había sido finalizada anteriormente");
+                case "ea52bdfd-8af6-4f5a-b182-2b99e554eb35":
+                    throw new ArgumentException("La inspección de la unidad ya había sido cancelada anteriormente");
+            }
+
+            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb34";
+            objModel.InspeccionUnidadEstatusName    = "FINALIZADO";
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            await _context.SaveChangesAsync();
+            objTransaction.Commit();
         }
 
         public async Task<InspeccionUnidad> Find(string id)
