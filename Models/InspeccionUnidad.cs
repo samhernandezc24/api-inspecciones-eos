@@ -14,7 +14,7 @@ namespace API.Inspecciones.Models
         public DateTime Fecha { get; set; }
         public string FechaNatural => this.Fecha.ToString("dd/MM/yyyy hh:mm:ss");
 
-        public bool IsValid => (DateTime.Now.Date - this.Fecha.Date).TotalDays <= 15;
+        public bool IsValid => FechaInspeccionFinal.HasValue && ((DateTime.Now.Date - FechaInspeccionFinal.Value.Date).TotalDays >= 15);
 
         // INSPECCION UNIDAD ESTATUS
         public string IdInspeccionUnidadEstatus { get; set; }

@@ -128,5 +128,20 @@ namespace API.Inspecciones.Controllers
 
             return objReturn.build();
         }
+
+        // APIS
+        [HttpPost("List")]
+        public async Task<ActionResult<dynamic>> ListRequerimientos()
+        {
+            try
+            {
+                return await _inspeccionesService.List();
+            }
+            catch (Exception exception)
+            {
+
+                return BadRequest(exception.Message);
+            }
+        }
     }
 }

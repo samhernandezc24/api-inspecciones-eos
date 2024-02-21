@@ -32,6 +32,10 @@ namespace API.Inspecciones.Services
 
             objModel.SetCreated(Globals.GetUser(user));
 
+            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == objModel.NumeroEconomico.ToUpper() && !x.Deleted).Any();
+
+            if (findUnidad) { throw new ArgumentException("El número económico que intenta registrar ya existe en la base de datos"); }
+
             _context.Unidades.Add(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();

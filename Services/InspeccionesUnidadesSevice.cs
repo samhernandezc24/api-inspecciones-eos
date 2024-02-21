@@ -61,6 +61,9 @@ namespace API.Inspecciones.Services
             objModel.FirmaOperador                  = Globals.ToUpper(data.firmaOperador);
             objModel.FirmaVerificador               = Globals.ToUpper(data.firmaVerificador);
 
+            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
+            objModel.InspeccionUnidadEstatusName    = "PENDIENTE";
+
             NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));
 
@@ -100,6 +103,9 @@ namespace API.Inspecciones.Services
             objModel.Odometro                       = Globals.ParseInt(data.odometro);
             objModel.Horometro                      = Globals.ParseInt(data.horometro);
             objModel.Locacion                       = Globals.ToUpper(data.locacion);
+
+            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
+            objModel.InspeccionUnidadEstatusName    = "PENDIENTE";
 
             NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));

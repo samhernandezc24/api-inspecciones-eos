@@ -38,6 +38,9 @@ namespace API.Inspecciones.Persistence
 
             // INSPECCIONES UNIDADES FICHEROS
             modelBuilder.Entity<InspeccionUnidadFichero>().HasOne(item => item.InspeccionUnidad).WithMany(item => item.InspeccionesUnidadesFicheros).HasForeignKey(item => item.IdInspeccionUnidad).OnDelete(DeleteBehavior.Restrict);
+
+            // UNIDADES (TEMPORALES)
+            modelBuilder.Entity<Unidad>().HasIndex(item => item.NumeroEconomico).IsUnique();
         }
 
         // F

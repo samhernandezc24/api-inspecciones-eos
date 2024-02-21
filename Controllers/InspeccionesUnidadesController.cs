@@ -51,11 +51,11 @@ namespace API.Inspecciones.Controllers
         {
             try
             {
-                return await _inspeccionesUnidadesService.CreateFromRequerimientos(Globals.JsonData(data), User);
+                await _inspeccionesUnidadesService.CreateFromRequerimientos(Globals.JsonData(data), User);
+                return true;
             }
             catch (Exception exception)
             {
-
                 return BadRequest(exception.Message);
             }
         }
