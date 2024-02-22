@@ -21,20 +21,26 @@ namespace API.Inspecciones.Services
         {
             var objTransaction  = _context.Database.BeginTransaction();
 
+            string numeroEconomico = Globals.ToUpper(data.numeroEconomico);
+
+            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == numeroEconomico && !x.Deleted).Any();
+
+            if (findUnidad) { throw new ArgumentException("El número económico que intentas registrar ya existe en la base de datos"); }
+
             // CREAR UNIDAD TEMPORAL
             Unidad objModel = new Unidad();
 
             objModel.IdUnidad           = Guid.NewGuid().ToString();
-            objModel.NumeroEconomico    = Globals.ToUpper(data.numeroEconomico);
+            objModel.NumeroEconomico    = numeroEconomico;
             objModel.Descripcion        = Globals.ToUpper(data.descripcion);    
             objModel.IdUnidadTipo       = Globals.ParseGuid(data.idUnidadTipo);
             objModel.UnidadTipoName     = Globals.ToUpper(data.unidadTipoName);
+            objModel.IdUnidadMarca      = Globals.ParseGuid(data.idUnidadMarca);
+            objModel.UnidadMarcaName    = Globals.ToUpper(data.unidadMarcaName);
+            objModel.NumeroSerie        = Globals.ToUpper(data.numeroSerie);
+            objModel.Modelo             = Globals.ToUpper(data.modelo);
 
             objModel.SetCreated(Globals.GetUser(user));
-
-            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == objModel.NumeroEconomico.ToUpper() && !x.Deleted).Any();
-
-            if (findUnidad) { throw new ArgumentException("El número económico que intenta registrar ya existe en la base de datos"); }
 
             _context.Unidades.Add(objModel);
             await _context.SaveChangesAsync();
@@ -86,6 +92,10 @@ namespace API.Inspecciones.Services
                                 NumeroEconomico = x.NumeroEconomico,
                                 IdUnidadTipo    = x.IdUnidadTipo,
                                 UnidadTipoName  = x.UnidadTipoName,
+                                IdUnidadMarca   = x.IdUnidadMarca,
+                                UnidadMarcaName = x.UnidadMarcaName,
+                                NumeroSerie     = x.NumeroSerie,
+                                Modelo          = x.Modelo,
                             })
                             .ToListAsync<dynamic>();
         }
@@ -98,7 +108,7 @@ namespace API.Inspecciones.Services
         public async Task<List<dynamic>> Predictive(dynamic data)
         {
             // INCLUDES
-            string fields = "IdUnidad,NumeroEconomico,Descripcion,IdUnidadTipo,UnidadTipoName";
+            string fields = "IdUnidad,NumeroEconomico,Descripcion,IdUnidadTipo,UnidadTipoName,IdUnidadMarca,UnidadMarcaName,NumeroSerie,Modelo";
 
             // QUERY
             var lstItems = _context.Unidades
@@ -139,7 +149,11 @@ namespace API.Inspecciones.Services
                         IdUnidadTipo        = item.IdUnidadTipo,
                         UnidadTipoName      = item.UnidadTipoName,
                         IsUnidadTemporal    = true,
-                    });
+                        IdUnidadMarca       = item.IdUnidadMarca,
+                        UnidadMarcaName     = item.UnidadMarcaName,
+                        NumeroSerie         = item.NumeroSerie,
+                        Modelo              = item.Modelo,
+                });
                 });
             }
 
@@ -154,15 +168,23 @@ namespace API.Inspecciones.Services
             string idUnidad = Globals.ParseGuid(data.idUnidad);
             Unidad objModel = await Find(idUnidad);
 
+            if (objModel == null) { throw new ArgumentException("La unidad no ha sido encontrada"); }
+            if (objModel.Deleted) { throw new ArgumentException("La unidad temporal ya ha sido eliminada"); }
+
+            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == objModel.NumeroEconomico.ToUpper() && !x.Deleted && x.IdUnidad != idUnidad).Any();
+
+            if (findUnidad) { throw new ArgumentException("El número económico que intenta registrar ya existe en la base de datos"); }
+
             objModel.NumeroEconomico    = Globals.ToUpper(data.numeroEconomico);
             objModel.Descripcion        = Globals.ToUpper(data.descripcion);    
             objModel.IdUnidadTipo       = Globals.ParseGuid(data.idUnidadTipo);
             objModel.UnidadTipoName     = Globals.ToUpper(data.unidadTipoName);
-            objModel.SetUpdated(Globals.GetUser(user));
+            objModel.IdUnidadMarca      = Globals.ParseGuid(data.idUnidadMarca);
+            objModel.UnidadMarcaName    = Globals.ToUpper(data.unidadMarcaName);
+            objModel.NumeroSerie        = Globals.ToUpper(data.numeroSerie);
+            objModel.Modelo             = Globals.ToUpper(data.modelo);
 
-            var findUnidad = _context.Unidades.Where(x => x.NumeroEconomico.ToUpper() == objModel.NumeroEconomico.ToUpper() && !x.Deleted && x.IdUnidad != idUnidad).Any();
-
-            if (findUnidad) { throw new ArgumentException("El número económico que intenta registrar ya existe en la base de datos"); }           
+            objModel.SetUpdated(Globals.GetUser(user));                      
 
             _context.Unidades.Update(objModel);
             await _context.SaveChangesAsync();

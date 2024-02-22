@@ -130,7 +130,7 @@ namespace API.Inspecciones.Controllers
         }
 
         // APIS
-        [HttpPost("List")]
+        [HttpPost("ListRequerimientos")]
         public async Task<ActionResult<dynamic>> ListRequerimientos()
         {
             try
