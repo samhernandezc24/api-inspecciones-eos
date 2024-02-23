@@ -18,18 +18,19 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
+            var displayName     = Globals.ToUpper($"Check List {data.name}");
 
             // GUARDAR INSPECCION
             Inspeccion objModel = new Inspeccion();
 
+
             objModel.IdInspeccion   = Guid.NewGuid().ToString();
             objModel.Folio          = Globals.ToUpper(data.folio);
             objModel.Name           = Globals.ToUpper(data.name);    
-            objModel.DisplayName    = Globals.ToUpper(data.displayName);
-            objModel.Correo         = Globals.ToString(data.correo);
-            objModel.SetCreated(objUser);
+            objModel.DisplayName    = displayName;
+            //objModel.Correo         = Globals.ToString(data.correo);
+            objModel.SetCreated(Globals.GetUser(user));
 
             _context.Inspecciones.Add(objModel);
             await _context.SaveChangesAsync();
@@ -91,7 +92,8 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            var objTransaction = _context.Database.BeginTransaction();
+            var objTransaction  = _context.Database.BeginTransaction();
+            var displayName     = Globals.ToUpper($"Check List {data.name}");
 
             // ACTUALIZAR INSPECCION
             string idInspeccion = Globals.ParseGuid(data.idInspeccion);
@@ -102,8 +104,8 @@ namespace API.Inspecciones.Services
 
             objModel.Folio          = Globals.ToUpper(data.folio);
             objModel.Name           = Globals.ToUpper(data.name);
-            objModel.DisplayName    = Globals.ToUpper(data.displayName);
-            objModel.Correo         = Globals.ToString(data.correo);
+            objModel.DisplayName    = displayName;
+            //objModel.Correo         = Globals.ToString(data.correo);
 
             _context.Inspecciones.Update(objModel);
             await _context.SaveChangesAsync();
