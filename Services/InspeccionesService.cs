@@ -18,8 +18,6 @@ namespace API.Inspecciones.Services
 
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
-
             var objUser         = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
@@ -27,9 +25,9 @@ namespace API.Inspecciones.Services
             Inspeccion objModel = new Inspeccion();
 
             objModel.IdInspeccion   = Guid.NewGuid().ToString();
-            objModel.Folio          = Globals.ToString(data.folio);
-            objModel.Name           = Globals.ToString(data.name);    
-            objModel.DisplayName    = Globals.ToString(data.displayName);
+            objModel.Folio          = Globals.ToUpper(data.folio);
+            objModel.Name           = Globals.ToUpper(data.name);    
+            objModel.DisplayName    = Globals.ToUpper(data.displayName);
             objModel.Correo         = Globals.ToString(data.correo);
             objModel.SetCreated(objUser);
 
@@ -45,8 +43,6 @@ namespace API.Inspecciones.Services
 
         public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_DELETE", user)) { throw new AppException(ExceptionMessage.SESSION_003); }
-
             var objTransaction = _context.Database.BeginTransaction();
 
             // ELIMINAR INSPECCION
@@ -95,8 +91,6 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
-
             var objTransaction = _context.Database.BeginTransaction();
 
             // ACTUALIZAR INSPECCION
@@ -106,9 +100,9 @@ namespace API.Inspecciones.Services
 
             if (objModel == null) { throw new ArgumentException("No se ha encontrado la inspección."); }
 
-            objModel.Folio          = Globals.ToString(data.folio);
-            objModel.Name           = Globals.ToString(data.name);
-            objModel.DisplayName    = Globals.ToString(data.displayName);
+            objModel.Folio          = Globals.ToUpper(data.folio);
+            objModel.Name           = Globals.ToUpper(data.name);
+            objModel.DisplayName    = Globals.ToUpper(data.displayName);
             objModel.Correo         = Globals.ToString(data.correo);
 
             _context.Inspecciones.Update(objModel);

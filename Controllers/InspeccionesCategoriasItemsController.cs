@@ -1,5 +1,4 @@
-﻿using API.Inspecciones.Interfaces;
-using API.Inspecciones.Services;
+﻿using API.Inspecciones.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Nodes;
@@ -16,30 +15,6 @@ namespace API.Inspecciones.Controllers
         public InspeccionesCategoriasItemsController(InspeccionesCategoriasItemsService inspeccionesCategoriasItemsService)
         {
             _inspeccionesCategoriasItemsService = inspeccionesCategoriasItemsService;
-        }
-
-        [HttpPost("Index")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> Index()
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                objReturn.Success(SuccessMessage.REQUEST);
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
         }
 
         [HttpPost("List")]
@@ -138,7 +113,7 @@ namespace API.Inspecciones.Controllers
                 await _inspeccionesCategoriasItemsService.Delete(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Eliminado";
-                objReturn.Message   = "Categoría eliminada exitosamente";
+                objReturn.Message   = "Formulario eliminado exitosamente";
             }
             catch (AppException appException)
             {

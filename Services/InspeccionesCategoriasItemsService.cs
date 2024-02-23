@@ -1,13 +1,13 @@
-﻿using API.Inspecciones.Interfaces;
-using API.Inspecciones.Models;
+﻿using API.Inspecciones.Models;
 using API.Inspecciones.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Workcube.Interfaces;
 using Workcube.Libraries;
 
 namespace API.Inspecciones.Services
 {
-    public class InspeccionesCategoriasItemsService : IInspeccionesCategoriasItemsService
+    public class InspeccionesCategoriasItemsService : IGlobal<InspeccionCategoriaItem>
     {
         private readonly Context _context;
 
