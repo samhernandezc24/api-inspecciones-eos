@@ -17,8 +17,6 @@ namespace API.Inspecciones.Services
         }
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_CATEGORIAS_ITEMS_CREATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
-
             var objTransaction = _context.Database.BeginTransaction();
 
             InspeccionCategoriaItem objModel = new InspeccionCategoriaItem();
@@ -79,8 +77,6 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            //if (!await HttpReq.GetPrivilegio("INSPECCIONES_CATEGORIAS_ITEMS_UPDATE", user)) { throw new AppException(ExceptionMessage.SESSION_003); };
-
             var objTransaction = _context.Database.BeginTransaction();
 
             // ACTUALIZAR FORMULARIO
