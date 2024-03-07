@@ -83,7 +83,7 @@ namespace API.Inspecciones.Services
                             .ToListAsync<dynamic>();
         }
 
-        public async Task<List<dynamic>> List(string idInspeccion)
+        public async Task<List<dynamic>> ListById(string idInspeccion)
         {
             return await _context.InspeccionesCategorias
                             .AsNoTracking()
@@ -93,6 +93,9 @@ namespace API.Inspecciones.Services
                             {
                                 IdInspeccionCategoria   = x.IdInspeccionCategoria,
                                 Name                    = x.Name,
+                                IdInspeccion            = x.IdInspeccion,
+                                InspeccionFolio         = x.InspeccionFolio,
+                                InspeccionName          = x.InspeccionName,
                             })
                             .ToListAsync<dynamic>();
                     

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Inspecciones.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240219052310_migration2")]
-    partial class migration2
+    [Migration("20240306144723_migration0")]
+    partial class migration0
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,11 +209,14 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdInspeccionUnidad")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AnioEquipo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BaseName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Capacidad")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Capacidad")
+                        .HasColumnType("decimal(15,3)");
 
                     b.Property<DateTime>("CreatedFecha")
                         .HasColumnType("datetime2");
@@ -258,7 +261,10 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdInspeccion")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdInspeccionUnidadEstatus")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("IdRequerimiento")
                         .HasColumnType("nvarchar(max)");
@@ -266,25 +272,34 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdUnidad")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdUnidadMarca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidadPlacaTipo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("IdUpdatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUserInspeccionFinal")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUserInspeccionInicial")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InspeccionFolio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InspeccionIdInspeccion")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("InspeccionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionUnidadEstatusName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsUnidadTemporal")
                         .HasColumnType("bit");
 
                     b.Property<string>("Locacion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Marca")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Modelo")
@@ -299,13 +314,22 @@ namespace API.Inspecciones.Migrations
                     b.Property<int>("Odometro")
                         .HasColumnType("int");
 
+                    b.Property<string>("Placa")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RequerimientoFolio")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TipoPlataforma")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UnidadMarcaName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UnidadNumeroEconomico")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadPlacaTipoName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedFecha")
@@ -314,13 +338,21 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("UpdatedUserName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserInspeccionFinalName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserInspeccionInicialName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("IdInspeccionUnidad");
 
                     b.HasIndex("Folio")
                         .IsUnique()
                         .HasFilter("[Folio] IS NOT NULL");
 
-                    b.HasIndex("InspeccionIdInspeccion");
+                    b.HasIndex("IdInspeccion");
+
+                    b.HasIndex("IdInspeccionUnidadEstatus");
 
                     b.ToTable("InspeccionesUnidades", "inspeccion");
                 });
@@ -437,6 +469,25 @@ namespace API.Inspecciones.Migrations
                     b.ToTable("InspeccionesUnidadesCategoriasItems", "inspeccion");
                 });
 
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadEstatus", b =>
+                {
+                    b.Property<string>("IdInspeccionUnidadEstatus")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
+                    b.HasKey("IdInspeccionUnidadEstatus");
+
+                    b.ToTable("InspeccionesUnidadesEstatus", "inspeccion");
+                });
+
             modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadFichero", b =>
                 {
                     b.Property<string>("IdInspeccionUnidadFichero")
@@ -487,6 +538,15 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdUnidad")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("AnioEquipo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BaseName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Capacidad")
+                        .HasColumnType("decimal(15,3)");
+
                     b.Property<DateTime>("CreatedFecha")
                         .HasColumnType("datetime2");
 
@@ -499,7 +559,19 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("Descripcion")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Horometro")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdBase")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("IdCreatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidadMarca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidadPlacaTipo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdUnidadTipo")
@@ -508,7 +580,28 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdUpdatedUser")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Modelo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NumeroEconomico")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("NumeroSerie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Odometro")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Placa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadMarcaName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadPlacaTipoName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnidadTipoName")
@@ -521,6 +614,10 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUnidad");
+
+                    b.HasIndex("NumeroEconomico")
+                        .IsUnique()
+                        .HasFilter("[NumeroEconomico] IS NOT NULL");
 
                     b.ToTable("Unidades", "inspeccion");
                 });
@@ -563,9 +660,17 @@ namespace API.Inspecciones.Migrations
                 {
                     b.HasOne("API.Inspecciones.Models.Inspeccion", "Inspeccion")
                         .WithMany("InspeccionesUnidades")
-                        .HasForeignKey("InspeccionIdInspeccion");
+                        .HasForeignKey("IdInspeccion")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("API.Inspecciones.Models.InspeccionUnidadEstatus", "InspeccionUnidadEstatus")
+                        .WithMany("InspeccionesUnidades")
+                        .HasForeignKey("IdInspeccionUnidadEstatus")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Inspeccion");
+
+                    b.Navigation("InspeccionUnidadEstatus");
                 });
 
             modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoria", b =>
@@ -645,6 +750,11 @@ namespace API.Inspecciones.Migrations
             modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoria", b =>
                 {
                     b.Navigation("InspeccionesUnidadesCategoriasItems");
+                });
+
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadEstatus", b =>
+                {
+                    b.Navigation("InspeccionesUnidades");
                 });
 #pragma warning restore 612, 618
         }

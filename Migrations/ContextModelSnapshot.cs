@@ -581,7 +581,7 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumeroEconomico")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NumeroSerie")
                         .HasColumnType("nvarchar(max)");
@@ -611,6 +611,10 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdUnidad");
+
+                    b.HasIndex("NumeroEconomico")
+                        .IsUnique()
+                        .HasFilter("[NumeroEconomico] IS NOT NULL");
 
                     b.ToTable("Unidades", "inspeccion");
                 });

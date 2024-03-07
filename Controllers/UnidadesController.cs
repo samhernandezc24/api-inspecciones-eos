@@ -1,5 +1,4 @@
-﻿using API.Inspecciones.Interfaces;
-using API.Inspecciones.Services;
+﻿using API.Inspecciones.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Nodes;
@@ -26,23 +25,54 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                var lstUnidadesTipos = await HttpReq.Post("unidades", "unidades/tipos/list");
+                var dataSourcePersistence = await HttpReq.Post("account", "DataSourcePersistence/find", Globals.TableDataSource("InspeccionesUnidades", User));
+
+                var lstMarcas   = await HttpReq.Post("unidades", "unidadesmarcas/list");
+                var lstTipos    = await HttpReq.Post("unidades", "unidades/tipos/list");
+                var lstPlacas   = await HttpReq.Post("unidades", "unidades/placas/list");
+                var lstUsuarios = await _unidadesService.ListUsuarios();
 
                 objReturn.Result = new
                 {
-                    UnidadesTipos = lstUnidadesTipos,
+                    dataSourcePersistence   = dataSourcePersistence,
+                    Usuarios                = lstUsuarios,
+                    Marcas                  = lstMarcas,
+                    Tipos                   = lstTipos,
+                    Placas                  = lstPlacas,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
 
+            return objReturn.build();
+        }
+
+        [HttpPost("DataSource")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> DataSource(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                objReturn.Result = await _unidadesService.DataSource(Globals.JsonData(data), User);
+
+                objReturn.Success(SuccessMessage.REQUEST);
+            }
+            catch (AppException exception)
+            {
+                objReturn.Exception(exception);
+            }
+            catch (Exception exception)
+            {
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -133,6 +163,49 @@ namespace API.Inspecciones.Controllers
             return objReturn.build();
         }
 
+        [HttpPost("Edit")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> Edit(JsonObject data)
+        {
+            var objReturn = new JsonReturn();
+
+            try
+            {
+                string id   = Globals.ParseGuid(Globals.JsonData(data)).idUnidad;
+                var objRaw  = await _unidadesService.Find(id);
+
+                var objModel = new
+                {
+                    objRaw.IdUnidad, objRaw.NumeroEconomico, objRaw.IdUnidadMarca, objRaw.UnidadMarcaName, objRaw.IdUnidadTipo, objRaw.UnidadTipoName,
+                    objRaw.AnioEquipo, objRaw.Modelo, objRaw.NumeroSerie, objRaw.Placa, objRaw.Observaciones
+                };
+                
+                var lstUnidadesTipos    = await HttpReq.Post("unidades", "unidadestipos/list");
+                var lstUnidadesMarcas   = await HttpReq.Post("unidades", "unidadesmarcas/list");
+                var lstUnidadesPlacas   = await HttpReq.Post("unidades", "unidades/placas/list");
+
+                objReturn.Result = new
+                {
+                    Unidad         = objModel,
+                    UnidadesTipos  = lstUnidadesTipos,
+                    UnidadesMarcas = lstUnidadesMarcas,
+                    UnidadesPlacas = lstUnidadesPlacas,
+                };
+
+                objReturn.Success(SuccessMessage.REQUEST);
+            }
+            catch (AppException exception)
+            {
+                objReturn.Exception(exception);
+            }
+            catch (Exception exception)
+            {
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
         [HttpPost("Update")]
         [Authorize]
         public async Task<ActionResult<dynamic>> Update(JsonObject data)
@@ -154,6 +227,31 @@ namespace API.Inspecciones.Controllers
             catch (Exception exception)
             {
 
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
+        [HttpPost("Reporte")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> Reporte(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                byte[] file = await _unidadesService.Reporte(Globals.JsonData(data));
+                objReturn.Result = Globals.GetBase64(file);
+
+                objReturn.Success(SuccessMessage.REQUEST);
+            }
+            catch (AppException exception)
+            {
+                objReturn.Exception(exception);
+            }
+            catch (Exception exception)
+            {
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 

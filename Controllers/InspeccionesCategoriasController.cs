@@ -58,7 +58,7 @@ namespace API.Inspecciones.Controllers
             {
                 var objData                     = Globals.JsonData(data);
                 var idInspeccion                = Globals.ParseGuid(objData.idInspeccion);
-                var lstInspeccionesCategorias   = await _inspeccionesCategoriasService.List(idInspeccion);
+                var lstInspeccionesCategorias   = await _inspeccionesCategoriasService.ListById(idInspeccion);
 
                 objReturn.Result = new
                 {

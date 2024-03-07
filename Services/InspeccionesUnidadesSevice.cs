@@ -180,7 +180,7 @@ namespace API.Inspecciones.Services
             var lstResult = await _context.InspeccionesUnidades
                                 .AsNoTracking()
                                 .Where(x => lstIds.Contains(x.IdUnidad) && !x.Deleted)
-                                .OrderByDescending(x => x.Fecha.Date)
+                                .OrderByDescending(x => x.Fecha)
                                 .ToListAsync();
 
             var lstGroup = lstResult.GroupBy(x => x.IdUnidad, x => x, (key, data) => new

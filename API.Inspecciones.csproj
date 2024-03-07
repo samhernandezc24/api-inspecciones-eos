@@ -29,4 +29,8 @@
 	<Content Include="Documents\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Requests\" />
+  </ItemGroup>
+
 </Project>
