@@ -4,6 +4,7 @@ using API.Inspecciones.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Inspecciones.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20240308143120_migration1")]
+    partial class migration1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -541,8 +544,8 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("BaseName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Capacidad")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("Capacidad")
+                        .HasColumnType("decimal(15,3)");
 
                     b.Property<DateTime>("CreatedFecha")
                         .HasColumnType("datetime2");
@@ -581,6 +584,9 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NumeroSerie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observaciones")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Odometro")

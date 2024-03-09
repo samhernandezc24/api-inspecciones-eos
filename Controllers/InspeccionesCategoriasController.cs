@@ -6,7 +6,7 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Inspecciones/Categorias")]
+    [Route("api/Categorias")]
     [ApiController]
     public class InspeccionesCategoriasController : ControllerBase
     {

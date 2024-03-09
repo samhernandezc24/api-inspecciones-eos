@@ -44,14 +44,10 @@ namespace API.Inspecciones.Services
             objModel.UnidadTipoName         = Globals.ToUpper(data.unidadTipoName);
             objModel.IdUnidadMarca          = Globals.ParseGuid(data.idUnidadMarca);
             objModel.UnidadMarcaName        = Globals.ToUpper(data.unidadMarcaName);
-            objModel.IdUnidadPlacaTipo      = Globals.ParseGuid(data.idUnidadPlacaTipo);
-            objModel.UnidadPlacaTipoName    = Globals.ParseGuid(data.unidadPlacaTipoName);
-            objModel.Placa                  = Globals.ParseGuid(data.placa);
             objModel.NumeroSerie            = Globals.ToUpper(data.numeroSerie);
             objModel.AnioEquipo             = Globals.ToUpper(data.anioEquipo);
             objModel.Modelo                 = Globals.ToUpper(data.modelo);
-            objModel.Capacidad              = Globals.ParseDecimal(data.capacidad);
-            objModel.Observaciones          = Globals.ToUpper(data.observaciones);
+            objModel.Capacidad              = Globals.ToUpper(data.capacidad);
 
             objModel.SetCreated(Globals.GetUser(user));
 
@@ -89,14 +85,10 @@ namespace API.Inspecciones.Services
                     UnidadTipoName      = item.UnidadTipoName,
                     IdUnidadMarca       = item.IdUnidadMarca,
                     UnidadMarcaName     = item.UnidadMarcaName,
-                    IdUnidadPlacaTipo   = item.IdUnidadPlacaTipo,
-                    UnidadPlacaTipoName = item.UnidadPlacaTipoName,
-                    Placa               = item.Placa,
                     NumeroSerie         = item.NumeroSerie,
                     AnioEquipo          = item.AnioEquipo,
                     Modelo              = item.Modelo,
                     Capacidad           = item.Capacidad,
-                    Observaciones       = item.Observaciones,
                     CreatedUserName     = item.CreatedUserName,
                     CreatedFecha        = item.CreatedFechaNatural,
                     UpdatedUserName     = item.UpdatedUserName,
@@ -135,7 +127,6 @@ namespace API.Inspecciones.Services
             {
                 {"IdUnidadMarca",       (strValue) => item => item.IdUnidadMarca        == strValue},
                 {"IdUnidadTipo",        (strValue) => item => item.IdUnidadTipo         == strValue},
-                {"IdUnidadPlacaTipo",   (strValue) => item => item.IdUnidadPlacaTipo    == strValue},
             };
 
             // FILTROS FECHAS
@@ -161,13 +152,10 @@ namespace API.Inspecciones.Services
                 case "descripcion"          : sortExpression = (x => x.Descripcion);            break;
                 case "unidadTipoName"       : sortExpression = (x => x.UnidadTipoName);         break;
                 case "unidadMarcaName"      : sortExpression = (x => x.UnidadMarcaName);        break;
-                case "unidadPlacaTipoName"  : sortExpression = (x => x.UnidadPlacaTipoName);    break;
-                case "placa"                : sortExpression = (x => x.Placa);                  break;
                 case "numeroSerie"          : sortExpression = (x => x.NumeroSerie);            break;
                 case "anioEquipo"           : sortExpression = (x => x.AnioEquipo);             break;
                 case "modelo"               : sortExpression = (x => x.Modelo);                 break;
                 case "capacidad"            : sortExpression = (x => x.Capacidad);              break;
-                case "observaciones"        : sortExpression = (x => x.Observaciones);          break;
                 case "createdUserName"      : sortExpression = (x => x.CreatedUserName);        break;
                 case "createdFechaNatural"  : sortExpression = (x => x.CreatedFecha);           break;
                 case "updatedUserName"      : sortExpression = (x => x.UpdatedUserName);        break;
@@ -187,14 +175,10 @@ namespace API.Inspecciones.Services
             columns.Add("UnidadTipoName");
             columns.Add("IdUnidadMarca");
             columns.Add("UnidadMarcaName");
-            columns.Add("IdUnidadPlacaTipo");
-            columns.Add("UnidadPlacaTipoName");
-            columns.Add("Placa");
             columns.Add("NumeroSerie");
             columns.Add("AnioEquipo");
             columns.Add("Modelo");
             columns.Add("Capacidad");
-            columns.Add("Observaciones");
             columns.Add("CreatedUserName");
             columns.Add("CreatedFecha");
             columns.Add("UpdatedUserName");
@@ -381,14 +365,10 @@ namespace API.Inspecciones.Services
             objModel.UnidadTipoName         = Globals.ToUpper(data.unidadTipoName);
             objModel.IdUnidadMarca          = Globals.ParseGuid(data.idUnidadMarca);
             objModel.UnidadMarcaName        = Globals.ToUpper(data.unidadMarcaName);
-            objModel.IdUnidadPlacaTipo      = Globals.ParseGuid(data.idUnidadPlacaTipo);
-            objModel.UnidadPlacaTipoName    = Globals.ParseGuid(data.unidadPlacaTipoName);
-            objModel.Placa                  = Globals.ParseGuid(data.placa);
             objModel.NumeroSerie            = Globals.ToUpper(data.numeroSerie);
             objModel.AnioEquipo             = Globals.ToUpper(data.anioEquipo);
             objModel.Modelo                 = Globals.ToUpper(data.modelo);
-            objModel.Capacidad              = Globals.ParseDecimal(data.capacidad);
-            objModel.Observaciones          = Globals.ToUpper(data.observaciones);
+            objModel.Capacidad              = Globals.ToUpper(data.capacidad);
             objModel.SetUpdated(Globals.GetUser(user));                      
 
             _context.Unidades.Update(objModel);

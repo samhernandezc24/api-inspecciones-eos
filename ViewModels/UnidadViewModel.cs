@@ -13,18 +13,12 @@
         // MARCA DE LA UNIDAD
         public string IdUnidadMarca { get; set; }
         public string UnidadMarcaName { get; set; }
-
-        // PLACAS DE LA UNIDAD
-        public string IdUnidadPlacaTipo { get; set; }
-        public string UnidadPlacaTipoName { get; set; }
-
-        public string Placa { get; set; }
+       
         public string NumeroSerie { get; set; }
         public string AnioEquipo { get; set; }
         public string Modelo { get; set; }
 
-        public decimal Capacidad { get; set; }
-        public string Observaciones { get; set; }
+        public string Capacidad { get; set; }
 
         public string CreatedUserName { get; set; }
         public DateTime CreatedFecha { get; set; }

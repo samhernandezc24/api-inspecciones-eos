@@ -15,7 +15,9 @@ namespace API.Inspecciones.Utils
 
             // MAPEO PARA REPORTE
             // U
-            CreateMap<UnidadViewModel, RepUnidad>();
+            CreateMap<UnidadViewModel, RepUnidad>()
+                .ForMember(d => d.createdFecha, o => o.MapFrom(s => s.CreatedFechaNatural))
+                .ForMember(d => d.updatedFecha, o => o.MapFrom(s => s.UpdatedFechaNatural));
         }
     }
 }

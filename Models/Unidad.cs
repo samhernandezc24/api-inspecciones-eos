@@ -23,19 +23,12 @@ namespace API.Inspecciones.Models
         // MARCA DE LA UNIDAD
         public string IdUnidadMarca { get; set; }
         public string UnidadMarcaName { get; set; }
-        
-        // PLACAS DE LA UNIDAD
-        public string IdUnidadPlacaTipo { get; set; }
-        public string UnidadPlacaTipoName { get; set; }
-
-        public string Placa {  get; set; }
+       
         public string NumeroSerie { get; set; }
         public string AnioEquipo { get; set; }
         public string Modelo { get; set; }
 
-        [Column(TypeName = "decimal(15,3)")]
-        public decimal Capacidad { get; set; }
-        public string Observaciones { get; set; }
+        public string Capacidad { get; set; }
         public int Odometro { get; set; }
         public int Horometro { get; set; }
     }
