@@ -11,7 +11,7 @@ namespace API.Inspecciones.Models
         public int Orden {  get; set; }
         public bool Deleted { get; set; }
 
+        public virtual List<CategoriaItem> CategoriasItems { get; set; }
         public virtual List<InspeccionCategoriaItem> InspeccionesCategoriasItems { get; set; }
-        public virtual List<InspeccionUnidadCategoriaItem> InspeccionesUnidadesCategoriasItems { get; set; }
     }
 }

@@ -6,15 +6,15 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Categorias")]
+    [Route("api/Inspecciones/Tipos/Categorias")]
     [ApiController]
-    public class InspeccionesCategoriasController : ControllerBase
+    public class CategoriasController : ControllerBase
     {
-        private readonly InspeccionesCategoriasService _inspeccionesCategoriasService;
+        private readonly CategoriasService _categoriasService;
 
-        public InspeccionesCategoriasController(InspeccionesCategoriasService inspeccionesCategoriasService)
+        public CategoriasController(CategoriasService categoriasService)
         {
-            _inspeccionesCategoriasService = inspeccionesCategoriasService;
+            _categoriasService = categoriasService;
         }
         
         [HttpPost("List")]
@@ -25,56 +25,52 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                var lstInspeccionesCategorias = await _inspeccionesCategoriasService.List();
+                var lstCategorias = await _categoriasService.List();
 
                 objReturn.Result = new
                 {
-                    InspeccionesCategorias = lstInspeccionesCategorias,
+                    Categorias = lstCategorias,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
             return objReturn.build();
         }
 
-        [HttpPost("ListByIdInspeccion")]
+        [HttpPost("ListByIdInspeccionTipo")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> ListByIdInspeccion(JsonObject data)
+        public async Task<ActionResult<dynamic>> ListByIdInspeccionTipo(JsonObject data)
         {
             JsonReturn objReturn = new JsonReturn();
 
             try
             {
                 var objData                     = Globals.JsonData(data);
-                var idInspeccion                = Globals.ParseGuid(objData.idInspeccion);
-                var lstInspeccionesCategorias   = await _inspeccionesCategoriasService.ListById(idInspeccion);
+                var idInspeccionTipo            = Globals.ParseGuid(objData.idInspeccionTipo);
+                var lstCategorias               = await _categoriasService.ListByIdInspeccionTipo(idInspeccionTipo);
 
                 objReturn.Result = new
                 {
-                    InspeccionesCategorias = lstInspeccionesCategorias,
+                    Categorias = lstCategorias,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -89,19 +85,17 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _inspeccionesCategoriasService.Create(Globals.JsonData(data), User);
+                await _categoriasService.Create(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Nueva categoría";
                 objReturn.Message   = "Categoría creada exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -116,19 +110,17 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _inspeccionesCategoriasService.Update(Globals.JsonData(data), User);
+                await _categoriasService.Update(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Actualización";
+                objReturn.Title     = "Actualizado";
                 objReturn.Message   = "Categoría actualizada exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -143,19 +135,17 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _inspeccionesCategoriasService.Delete(Globals.JsonData(data), User);
+                await _categoriasService.Delete(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Eliminado";
                 objReturn.Message   = "Categoría eliminada exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 

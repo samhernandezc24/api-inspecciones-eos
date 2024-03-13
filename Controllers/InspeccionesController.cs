@@ -1,12 +1,13 @@
 ﻿using API.Inspecciones.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Text.Json.Nodes;
 using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Inspecciones/Tipos")]
+    [Route("api/Inspecciones")]
     [ApiController]
     public class InspeccionesController : ControllerBase
     {
@@ -15,38 +16,7 @@ namespace API.Inspecciones.Controllers
         public InspeccionesController(InspeccionesService inspeccionesService)
         {
             _inspeccionesService = inspeccionesService;
-        }        
-
-        [HttpPost("List")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> List()
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                var lstInspecciones = await _inspeccionesService.List();
-
-                objReturn.Result = new
-                {
-                    Inspecciones = lstInspecciones,
-                };
-
-                objReturn.Success(SuccessMessage.REQUEST);
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
-        }        
+        }
 
         [HttpPost("Store")]
         [Authorize]
@@ -63,79 +33,108 @@ namespace API.Inspecciones.Controllers
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
             return objReturn.build();
         }
 
-        [HttpPost("Update")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> Update(JsonObject data)
+        // ENDPOINT PARA APIS EXTERNAS
+        [HttpPost("StoreFromRequerimientos")]
+        public async Task<ActionResult<dynamic>> StoreFromRequerimientos(JsonObject data)
         {
-            JsonReturn objReturn = new JsonReturn();
-
             try
             {
-                await _inspeccionesService.Update(Globals.JsonData(data), User);
-
-                objReturn.Title     = "Actualización";
-                objReturn.Message   = "Inspección actualizada exitosamente";
-            }
-            catch (AppException appException)
-            {
-
-                objReturn.Exception(appException);
+                await _inspeccionesService.CreateFromRequerimientos(Globals.JsonData(data), User);
+                return true;
             }
             catch (Exception exception)
             {
-
-                objReturn.Exception(ExceptionMessage.RawException(exception));
+                return BadRequest(exception.Message);
             }
-
-            return objReturn.build();
         }
 
-        [HttpPost("Delete")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> Delete(JsonObject data)
+        [HttpPost("Find")]
+        public async Task<ActionResult<dynamic>> Find(JsonObject data)
         {
-            JsonReturn objReturn = new JsonReturn();
-
             try
             {
-                await _inspeccionesService.Delete(Globals.JsonData(data), User);
+                dynamic argData = Globals.JsonData(data);
 
-                objReturn.Title     = "Eliminado";
-                objReturn.Message   = "Inspección eliminada exitosamente";
+                string id = Globals.ParseGuid(argData.idInspeccion);
+
+                return await _inspeccionesService.Find(id);
             }
-            catch (AppException appException)
+            catch (Exception exception)
             {
+                return BadRequest(exception.Message);
+            }
+        }
 
-                objReturn.Exception(appException);
+        [HttpPost("FindSelector")]
+        public async Task<ActionResult<dynamic>> FindSelector(JsonObject data)
+        {
+            try
+            {
+                dynamic argData = Globals.JsonData(data);
+
+                string id       = Globals.ParseGuid(argData.idInspeccion);
+                string fields   = Globals.ToString(argData.fields);
+
+                return await _inspeccionesService.FindSelectorById(id, fields);
+            }
+            catch (Exception exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPost("FindLastInspeccionByIds")]
+        public async Task<ActionResult<List<dynamic>>> FindLastInspeccionByIds(JsonObject data)
+        {
+            try
+            {
+                var objData         = Globals.JsonData(data);
+                List<string> lstIds = JsonConvert.DeserializeObject<List<string>>(Globals.ToString(objData.lstIds));
+
+                return await _inspeccionesService.FindLastInspeccionByIds(lstIds);
             }
             catch (Exception exception)
             {
 
-                objReturn.Exception(ExceptionMessage.RawException(exception));
+                return BadRequest(exception.Message);
             }
-
-            return objReturn.build();
         }
 
-        // APIS
-        [HttpPost("ListRequerimientos")]
-        public async Task<ActionResult<dynamic>> ListRequerimientos()
+        [HttpPost("List")]
+        public async Task<ActionResult<List<dynamic>>> List()
         {
             try
             {
                 return await _inspeccionesService.List();
+            }
+            catch (Exception exception)
+            {
+
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPost("ListSelector")]
+        public async Task<ActionResult<List<dynamic>>> ListSelector(JsonObject data)
+        {
+            try
+            {
+                dynamic argData = Globals.JsonData(data);
+
+                string idInspeccion     = Globals.ParseGuid(argData.idInspeccion);
+                string fields           = Globals.ToString(argData.fields);
+
+                return await _inspeccionesService.ListSelector(idInspeccion, fields);
             }
             catch (Exception exception)
             {

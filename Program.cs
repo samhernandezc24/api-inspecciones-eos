@@ -17,11 +17,11 @@ builder.Services.AddDbContext<Context>(opt => opt.UseSqlServer(builder.Configura
 
 // Registrar servicios.
 builder.Services.AddScoped<FormulariosTiposService, FormulariosTiposService>();
-builder.Services.AddScoped<InspeccionesCategoriasItemsService, InspeccionesCategoriasItemsService>();
-builder.Services.AddScoped<InspeccionesCategoriasService, InspeccionesCategoriasService>();
+builder.Services.AddScoped<CategoriasItemsService, CategoriasItemsService>();
+builder.Services.AddScoped<CategoriasService, CategoriasService>();
+builder.Services.AddScoped<InspeccionesTiposService, InspeccionesTiposService>();
+builder.Services.AddScoped<InspeccionesFicherosService, InspeccionesFicherosService>();
 builder.Services.AddScoped<InspeccionesService, InspeccionesService>();
-builder.Services.AddScoped<InspeccionesUnidadesFicherosService, InspeccionesUnidadesFicherosService>();
-builder.Services.AddScoped<InspeccionesUnidadesService, InspeccionesUnidadesService>();
 builder.Services.AddScoped<UnidadesService, UnidadesService>();
 
 // Agregar servicios al contenedor.

@@ -1,4 +1,5 @@
-﻿using API.Inspecciones.Services;
+﻿using API.Inspecciones.Models;
+using API.Inspecciones.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Nodes;
@@ -6,42 +7,54 @@ using Workcube.Libraries;
 
 namespace API.Inspecciones.Controllers
 {
-    [Route("api/Categorias/Items")]
+    [Route("api/Inspecciones/Ficheros")]
     [ApiController]
-    public class InspeccionesCategoriasItemsController : ControllerBase
+    public class InspeccionesFicherosController : ControllerBase
     {
-        private readonly InspeccionesCategoriasItemsService _inspeccionesCategoriasItemsService;
+        private readonly InspeccionesService _inspeccionesService;
+        private readonly InspeccionesFicherosService _inspeccionesFicherosService;
 
-        public InspeccionesCategoriasItemsController(InspeccionesCategoriasItemsService inspeccionesCategoriasItemsService)
+        public InspeccionesFicherosController(InspeccionesService inspeccionesService, InspeccionesFicherosService inspeccionesFicherosService)
         {
-            _inspeccionesCategoriasItemsService = inspeccionesCategoriasItemsService;
+            _inspeccionesService            = inspeccionesService;
+            _inspeccionesFicherosService    = inspeccionesFicherosService;
         }
 
         [HttpPost("List")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> List()
+        public async Task<ActionResult<dynamic>> List(JsonObject data)
         {
             JsonReturn objReturn = new JsonReturn();
 
             try
             {
-                List<dynamic> lstInspeccionesCategoriasItems = await _inspeccionesCategoriasItemsService.List();
+                var objData           = Globals.JsonData(data);
+                string idInspeccion   = Globals.ParseGuid(objData.idInspeccion);
+
+                Inspeccion objModel = await _inspeccionesService.FindSelectorById(idInspeccion, "Folio,UnidadNumeroEconomico");
+
+                var objInspeccion = new
+                {
+                    Folio                   = objModel.Folio,
+                    UnidadNumeroEconomico   = objModel.UnidadNumeroEconomico,
+                };
+
+                var objFotos = await _inspeccionesFicherosService.List(idInspeccion);
 
                 objReturn.Result = new
                 {
-                    InspeccionesCategoriasItems = lstInspeccionesCategoriasItems,
+                    Inspeccion      = objInspeccion,
+                    FotosGenerales  = objFotos,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -56,19 +69,16 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                objReturn.Result = await _inspeccionesCategoriasItemsService.Create(Globals.JsonData(data), User);
+                await _inspeccionesFicherosService.Create(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Nuevo formulario";
-                objReturn.Message   = "Formulario creado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -83,19 +93,17 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _inspeccionesCategoriasItemsService.Update(Globals.JsonData(data), User);
+                await _inspeccionesFicherosService.Update(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Actualización";
-                objReturn.Message   = "Formulario actualizado exitosamente";
+                objReturn.Title     = "Actualizado";
+                objReturn.Message   = "Foto actualizada exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
@@ -110,19 +118,17 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                await _inspeccionesCategoriasItemsService.Delete(Globals.JsonData(data), User);
+                await _inspeccionesService.Delete(Globals.JsonData(data), User);
 
                 objReturn.Title     = "Eliminado";
-                objReturn.Message   = "Formulario eliminado exitosamente";
+                objReturn.Message   = "Foto eliminada exitosamente";
             }
             catch (AppException appException)
             {
-
                 objReturn.Exception(appException);
             }
             catch (Exception exception)
             {
-
                 objReturn.Exception(ExceptionMessage.RawException(exception));
             }
 
