@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Inspecciones.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240308162521_migration2")]
-    partial class migration2
+    [Migration("20240314020030_migration0")]
+    partial class migration0
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,115 @@ namespace API.Inspecciones.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("API.Inspecciones.Models.Categoria", b =>
+                {
+                    b.Property<string>("IdCategoria")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("IdCreatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdInspeccionTipo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdUpdatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionTipoFolio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionTipoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdCategoria");
+
+                    b.HasIndex("IdInspeccionTipo");
+
+                    b.ToTable("Categorias", "inspeccion");
+                });
+
+            modelBuilder.Entity("API.Inspecciones.Models.CategoriaItem", b =>
+                {
+                    b.Property<string>("IdCategoriaItem")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CategoriaName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormularioTipoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormularioValor")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdCategoria")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdCreatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdFormularioTipo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdInspeccionTipo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdUpdatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionTipoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdCategoriaItem");
+
+                    b.HasIndex("IdCategoria");
+
+                    b.HasIndex("IdFormularioTipo");
+
+                    b.HasIndex("IdInspeccionTipo");
+
+                    b.ToTable("CategoriasItems", "inspeccion");
+                });
 
             modelBuilder.Entity("API.Inspecciones.Models.FormularioTipo", b =>
                 {
@@ -53,8 +162,14 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdInspeccion")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Correo")
+                    b.Property<string>("AnioEquipo")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BaseName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Capacidad")
+                        .HasColumnType("decimal(15,3)");
 
                     b.Property<DateTime>("CreatedFecha")
                         .HasColumnType("datetime2");
@@ -65,19 +180,109 @@ namespace API.Inspecciones.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("DisplayName")
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaInspeccionFinal")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaInspeccionFinalUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaInspeccionInicial")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FechaInspeccionInicialUpdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FirmaOperador")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirmaVerificador")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Folio")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Horometro")
+                        .HasColumnType("int");
+
+                    b.Property<string>("IdBase")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("IdCreatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdInspeccionEstatus")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdInspeccionTipo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdRequerimiento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidad")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidadMarca")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUnidadPlacaTipo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdUpdatedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("IdUserInspeccionFinal")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUserInspeccionInicial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionEstatusName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionTipoFolio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InspeccionTipoName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUnidadTemporal")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Locacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modelo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NumeroSerie")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Odometro")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Placa")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequerimientoFolio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TipoPlataforma")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadMarcaName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadNumeroEconomico")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UnidadPlacaTipoName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedFecha")
@@ -86,11 +291,21 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("UpdatedUserName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserInspeccionFinalName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserInspeccionInicialName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("IdInspeccion");
 
                     b.HasIndex("Folio")
                         .IsUnique()
                         .HasFilter("[Folio] IS NOT NULL");
+
+                    b.HasIndex("IdInspeccionEstatus");
+
+                    b.HasIndex("IdInspeccionTipo");
 
                     b.ToTable("Inspecciones", "inspeccion");
                 });
@@ -119,9 +334,6 @@ namespace API.Inspecciones.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InspeccionFolio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -181,266 +393,7 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("InspeccionCategoriaName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InspeccionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdInspeccionCategoriaItem");
-
-                    b.HasIndex("IdFormularioTipo");
-
-                    b.HasIndex("IdInspeccion");
-
-                    b.HasIndex("IdInspeccionCategoria");
-
-                    b.ToTable("InspeccionesCategoriasItems", "inspeccion");
-                });
-
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidad", b =>
-                {
-                    b.Property<string>("IdInspeccionUnidad")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AnioEquipo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BaseName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Capacidad")
-                        .HasColumnType("decimal(15,3)");
-
-                    b.Property<DateTime>("CreatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaInspeccionFinal")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaInspeccionFinalUpdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaInspeccionInicial")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaInspeccionInicialUpdate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirmaOperador")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirmaVerificador")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Folio")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Horometro")
-                        .HasColumnType("int");
-
-                    b.Property<string>("IdBase")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdCreatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdInspeccion")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdInspeccionUnidadEstatus")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdRequerimiento")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUnidad")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUnidadMarca")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUnidadPlacaTipo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUpdatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUserInspeccionFinal")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdUserInspeccionInicial")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("InspeccionFolio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionUnidadEstatusName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsUnidadTemporal")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Locacion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Modelo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NumeroSerie")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Observaciones")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Odometro")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Placa")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RequerimientoFolio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TipoPlataforma")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UnidadMarcaName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UnidadNumeroEconomico")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UnidadPlacaTipoName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserInspeccionFinalName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserInspeccionInicialName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdInspeccionUnidad");
-
-                    b.HasIndex("Folio")
-                        .IsUnique()
-                        .HasFilter("[Folio] IS NOT NULL");
-
-                    b.HasIndex("IdInspeccion");
-
-                    b.HasIndex("IdInspeccionUnidadEstatus");
-
-                    b.ToTable("InspeccionesUnidades", "inspeccion");
-                });
-
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoria", b =>
-                {
-                    b.Property<string>("IdInspeccionUnidadCategoria")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("IdCreatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdInspeccionUnidad")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdUpdatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionUnidadFolio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UpdatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UpdatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("IdInspeccionUnidadCategoria");
-
-                    b.HasIndex("IdInspeccionUnidad");
-
-                    b.ToTable("InspeccionesUnidadesCategorias", "inspeccion");
-                });
-
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoriaItem", b =>
-                {
-                    b.Property<string>("IdInspeccionUnidadCategoriaItem")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedFecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedUserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormularioTipoName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormularioValor")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdCreatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdFormularioTipo")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdInspeccionUnidad")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdInspeccionUnidadCategoria")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("IdUpdatedUser")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionUnidadCategoriaName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InspeccionUnidadFolio")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -458,20 +411,20 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("ValueAnterior")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdInspeccionUnidadCategoriaItem");
+                    b.HasKey("IdInspeccionCategoriaItem");
 
                     b.HasIndex("IdFormularioTipo");
 
-                    b.HasIndex("IdInspeccionUnidad");
+                    b.HasIndex("IdInspeccion");
 
-                    b.HasIndex("IdInspeccionUnidadCategoria");
+                    b.HasIndex("IdInspeccionCategoria");
 
-                    b.ToTable("InspeccionesUnidadesCategoriasItems", "inspeccion");
+                    b.ToTable("InspeccionesCategoriasItems", "inspeccion");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadEstatus", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionEstatus", b =>
                 {
-                    b.Property<string>("IdInspeccionUnidadEstatus")
+                    b.Property<string>("IdInspeccionEstatus")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("Deleted")
@@ -483,14 +436,14 @@ namespace API.Inspecciones.Migrations
                     b.Property<int>("Orden")
                         .HasColumnType("int");
 
-                    b.HasKey("IdInspeccionUnidadEstatus");
+                    b.HasKey("IdInspeccionEstatus");
 
-                    b.ToTable("InspeccionesUnidadesEstatus", "inspeccion");
+                    b.ToTable("InspeccionesEstatus", "inspeccion");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadFichero", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionFichero", b =>
                 {
-                    b.Property<string>("IdInspeccionUnidadFichero")
+                    b.Property<string>("IdInspeccionFichero")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedFecha")
@@ -505,13 +458,13 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("IdCreatedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IdInspeccionUnidad")
+                    b.Property<string>("IdInspeccion")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("IdUpdatedUser")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InspeccionUnidadFolio")
+                    b.Property<string>("InspeccionFolio")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Orden")
@@ -526,11 +479,58 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("UpdatedUserName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("IdInspeccionUnidadFichero");
+                    b.HasKey("IdInspeccionFichero");
 
-                    b.HasIndex("IdInspeccionUnidad");
+                    b.HasIndex("IdInspeccion");
 
-                    b.ToTable("InspeccionesUnidadesFicheros", "inspeccion");
+                    b.ToTable("InspeccionesFicheros", "inspeccion");
+                });
+
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionTipo", b =>
+                {
+                    b.Property<string>("IdInspeccionTipo")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Correo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Folio")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IdCreatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdUpdatedUser")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedFecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("IdInspeccionTipo");
+
+                    b.HasIndex("Folio")
+                        .IsUnique()
+                        .HasFilter("[Folio] IS NOT NULL");
+
+                    b.ToTable("InspeccionesTipos", "inspeccion");
                 });
 
             modelBuilder.Entity("API.Inspecciones.Models.Unidad", b =>
@@ -610,6 +610,57 @@ namespace API.Inspecciones.Migrations
                     b.ToTable("Unidades", "inspeccion");
                 });
 
+            modelBuilder.Entity("API.Inspecciones.Models.Categoria", b =>
+                {
+                    b.HasOne("API.Inspecciones.Models.InspeccionTipo", "InspeccionTipo")
+                        .WithMany("Categorias")
+                        .HasForeignKey("IdInspeccionTipo")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("InspeccionTipo");
+                });
+
+            modelBuilder.Entity("API.Inspecciones.Models.CategoriaItem", b =>
+                {
+                    b.HasOne("API.Inspecciones.Models.Categoria", "Categoria")
+                        .WithMany("CategoriasItems")
+                        .HasForeignKey("IdCategoria")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("API.Inspecciones.Models.FormularioTipo", "FormularioTipo")
+                        .WithMany("CategoriasItems")
+                        .HasForeignKey("IdFormularioTipo")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("API.Inspecciones.Models.InspeccionTipo", "InspeccionTipo")
+                        .WithMany("CategoriasItems")
+                        .HasForeignKey("IdInspeccionTipo")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Categoria");
+
+                    b.Navigation("FormularioTipo");
+
+                    b.Navigation("InspeccionTipo");
+                });
+
+            modelBuilder.Entity("API.Inspecciones.Models.Inspeccion", b =>
+                {
+                    b.HasOne("API.Inspecciones.Models.InspeccionEstatus", "InspeccionEstatus")
+                        .WithMany("Inspecciones")
+                        .HasForeignKey("IdInspeccionEstatus")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("API.Inspecciones.Models.InspeccionTipo", "InspeccionTipo")
+                        .WithMany("Inspecciones")
+                        .HasForeignKey("IdInspeccionTipo")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("InspeccionEstatus");
+
+                    b.Navigation("InspeccionTipo");
+                });
+
             modelBuilder.Entity("API.Inspecciones.Models.InspeccionCategoria", b =>
                 {
                     b.HasOne("API.Inspecciones.Models.Inspeccion", "Inspeccion")
@@ -627,7 +678,7 @@ namespace API.Inspecciones.Migrations
                         .HasForeignKey("IdFormularioTipo")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("API.Inspecciones.Models.Inspeccion", "Inspeccion")
+                    b.HasOne("API.Inspecciones.Models.Inspeccion", "InspeccionUnidad")
                         .WithMany("InspeccionesCategoriasItems")
                         .HasForeignKey("IdInspeccion")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -639,77 +690,31 @@ namespace API.Inspecciones.Migrations
 
                     b.Navigation("FormularioTipo");
 
-                    b.Navigation("Inspeccion");
-
                     b.Navigation("InspeccionCategoria");
+
+                    b.Navigation("InspeccionUnidad");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidad", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionFichero", b =>
                 {
                     b.HasOne("API.Inspecciones.Models.Inspeccion", "Inspeccion")
-                        .WithMany("InspeccionesUnidades")
+                        .WithMany("InspeccionesFicheros")
                         .HasForeignKey("IdInspeccion")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("API.Inspecciones.Models.InspeccionUnidadEstatus", "InspeccionUnidadEstatus")
-                        .WithMany("InspeccionesUnidades")
-                        .HasForeignKey("IdInspeccionUnidadEstatus")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Inspeccion");
-
-                    b.Navigation("InspeccionUnidadEstatus");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoria", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.Categoria", b =>
                 {
-                    b.HasOne("API.Inspecciones.Models.InspeccionUnidad", "InspeccionUnidad")
-                        .WithMany("InspeccionesUnidadesCategorias")
-                        .HasForeignKey("IdInspeccionUnidad")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("InspeccionUnidad");
-                });
-
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoriaItem", b =>
-                {
-                    b.HasOne("API.Inspecciones.Models.FormularioTipo", "FormularioTipo")
-                        .WithMany("InspeccionesUnidadesCategoriasItems")
-                        .HasForeignKey("IdFormularioTipo")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("API.Inspecciones.Models.InspeccionUnidad", "InspeccionUnidad")
-                        .WithMany("InspeccionesUnidadesCategoriasItems")
-                        .HasForeignKey("IdInspeccionUnidad")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("API.Inspecciones.Models.InspeccionUnidadCategoria", "InspeccionUnidadCategoria")
-                        .WithMany("InspeccionesUnidadesCategoriasItems")
-                        .HasForeignKey("IdInspeccionUnidadCategoria")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("FormularioTipo");
-
-                    b.Navigation("InspeccionUnidad");
-
-                    b.Navigation("InspeccionUnidadCategoria");
-                });
-
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadFichero", b =>
-                {
-                    b.HasOne("API.Inspecciones.Models.InspeccionUnidad", "InspeccionUnidad")
-                        .WithMany("InspeccionesUnidadesFicheros")
-                        .HasForeignKey("IdInspeccionUnidad")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("InspeccionUnidad");
+                    b.Navigation("CategoriasItems");
                 });
 
             modelBuilder.Entity("API.Inspecciones.Models.FormularioTipo", b =>
                 {
-                    b.Navigation("InspeccionesCategoriasItems");
+                    b.Navigation("CategoriasItems");
 
-                    b.Navigation("InspeccionesUnidadesCategoriasItems");
+                    b.Navigation("InspeccionesCategoriasItems");
                 });
 
             modelBuilder.Entity("API.Inspecciones.Models.Inspeccion", b =>
@@ -718,7 +723,7 @@ namespace API.Inspecciones.Migrations
 
                     b.Navigation("InspeccionesCategoriasItems");
 
-                    b.Navigation("InspeccionesUnidades");
+                    b.Navigation("InspeccionesFicheros");
                 });
 
             modelBuilder.Entity("API.Inspecciones.Models.InspeccionCategoria", b =>
@@ -726,23 +731,18 @@ namespace API.Inspecciones.Migrations
                     b.Navigation("InspeccionesCategoriasItems");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidad", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionEstatus", b =>
                 {
-                    b.Navigation("InspeccionesUnidadesCategorias");
-
-                    b.Navigation("InspeccionesUnidadesCategoriasItems");
-
-                    b.Navigation("InspeccionesUnidadesFicheros");
+                    b.Navigation("Inspecciones");
                 });
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadCategoria", b =>
+            modelBuilder.Entity("API.Inspecciones.Models.InspeccionTipo", b =>
                 {
-                    b.Navigation("InspeccionesUnidadesCategoriasItems");
-                });
+                    b.Navigation("Categorias");
 
-            modelBuilder.Entity("API.Inspecciones.Models.InspeccionUnidadEstatus", b =>
-                {
-                    b.Navigation("InspeccionesUnidades");
+                    b.Navigation("CategoriasItems");
+
+                    b.Navigation("Inspecciones");
                 });
 #pragma warning restore 612, 618
         }

@@ -31,11 +31,26 @@ namespace API.Inspecciones.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Inspecciones",
+                name: "InspeccionesEstatus",
                 schema: "inspeccion",
                 columns: table => new
                 {
-                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdInspeccionEstatus = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Orden = table.Column<int>(type: "int", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InspeccionesEstatus", x => x.IdInspeccionEstatus);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InspeccionesTipos",
+                schema: "inspeccion",
+                columns: table => new
+                {
+                    IdInspeccionTipo = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Folio = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -50,22 +65,7 @@ namespace API.Inspecciones.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Inspecciones", x => x.IdInspeccion);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "InspeccionesUnidadesEstatus",
-                schema: "inspeccion",
-                columns: table => new
-                {
-                    IdInspeccionUnidadEstatus = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Orden = table.Column<int>(type: "int", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InspeccionesUnidadesEstatus", x => x.IdInspeccionUnidadEstatus);
+                    table.PrimaryKey("PK_InspeccionesTipos", x => x.IdInspeccionTipo);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,14 +82,10 @@ namespace API.Inspecciones.Migrations
                     BaseName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdUnidadMarca = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnidadMarcaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdUnidadPlacaTipo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UnidadPlacaTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Placa = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NumeroSerie = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnioEquipo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Modelo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Capacidad = table.Column<decimal>(type: "decimal(15,3)", nullable: false),
-                    Observaciones = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Capacidad = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Odometro = table.Column<int>(type: "int", nullable: false),
                     Horometro = table.Column<int>(type: "int", nullable: false),
                     IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -106,15 +102,15 @@ namespace API.Inspecciones.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InspeccionesCategorias",
+                name: "Categorias",
                 schema: "inspeccion",
                 columns: table => new
                 {
-                    IdInspeccionCategoria = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdCategoria = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InspeccionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdInspeccionTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionTipoFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InspeccionTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -125,26 +121,26 @@ namespace API.Inspecciones.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InspeccionesCategorias", x => x.IdInspeccionCategoria);
+                    table.PrimaryKey("PK_Categorias", x => x.IdCategoria);
                     table.ForeignKey(
-                        name: "FK_InspeccionesCategorias_Inspecciones_IdInspeccion",
-                        column: x => x.IdInspeccion,
+                        name: "FK_Categorias_InspeccionesTipos_IdInspeccionTipo",
+                        column: x => x.IdInspeccionTipo,
                         principalSchema: "inspeccion",
-                        principalTable: "Inspecciones",
-                        principalColumn: "IdInspeccion",
+                        principalTable: "InspeccionesTipos",
+                        principalColumn: "IdInspeccionTipo",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "InspeccionesUnidades",
+                name: "Inspecciones",
                 schema: "inspeccion",
                 columns: table => new
                 {
-                    IdInspeccionUnidad = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Folio = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdInspeccionUnidadEstatus = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionUnidadEstatusName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdInspeccionEstatus = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionEstatusName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdBase = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BaseName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdUnidad = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -152,9 +148,9 @@ namespace API.Inspecciones.Migrations
                     IsUnidadTemporal = table.Column<bool>(type: "bit", nullable: false),
                     IdUnidadMarca = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UnidadMarcaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    InspeccionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdInspeccionTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionTipoFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InspeccionTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FechaInspeccionInicial = table.Column<DateTime>(type: "datetime2", nullable: true),
                     FechaInspeccionInicialUpdate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IdUserInspeccionInicial = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -189,16 +185,124 @@ namespace API.Inspecciones.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InspeccionesUnidades", x => x.IdInspeccionUnidad);
+                    table.PrimaryKey("PK_Inspecciones", x => x.IdInspeccion);
                     table.ForeignKey(
-                        name: "FK_InspeccionesUnidades_InspeccionesUnidadesEstatus_IdInspeccionUnidadEstatus",
-                        column: x => x.IdInspeccionUnidadEstatus,
+                        name: "FK_Inspecciones_InspeccionesEstatus_IdInspeccionEstatus",
+                        column: x => x.IdInspeccionEstatus,
                         principalSchema: "inspeccion",
-                        principalTable: "InspeccionesUnidadesEstatus",
-                        principalColumn: "IdInspeccionUnidadEstatus",
+                        principalTable: "InspeccionesEstatus",
+                        principalColumn: "IdInspeccionEstatus",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_InspeccionesUnidades_Inspecciones_IdInspeccion",
+                        name: "FK_Inspecciones_InspeccionesTipos_IdInspeccionTipo",
+                        column: x => x.IdInspeccionTipo,
+                        principalSchema: "inspeccion",
+                        principalTable: "InspeccionesTipos",
+                        principalColumn: "IdInspeccionTipo",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoriasItems",
+                schema: "inspeccion",
+                columns: table => new
+                {
+                    IdCategoriaItem = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdInspeccionTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdCategoria = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CategoriaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdFormularioTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FormularioTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FormularioValor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoriasItems", x => x.IdCategoriaItem);
+                    table.ForeignKey(
+                        name: "FK_CategoriasItems_Categorias_IdCategoria",
+                        column: x => x.IdCategoria,
+                        principalSchema: "inspeccion",
+                        principalTable: "Categorias",
+                        principalColumn: "IdCategoria",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CategoriasItems_FormulariosTipos_IdFormularioTipo",
+                        column: x => x.IdFormularioTipo,
+                        principalSchema: "inspeccion",
+                        principalTable: "FormulariosTipos",
+                        principalColumn: "IdFormularioTipo",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CategoriasItems_InspeccionesTipos_IdInspeccionTipo",
+                        column: x => x.IdInspeccionTipo,
+                        principalSchema: "inspeccion",
+                        principalTable: "InspeccionesTipos",
+                        principalColumn: "IdInspeccionTipo",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InspeccionesCategorias",
+                schema: "inspeccion",
+                columns: table => new
+                {
+                    IdInspeccionCategoria = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InspeccionesCategorias", x => x.IdInspeccionCategoria);
+                    table.ForeignKey(
+                        name: "FK_InspeccionesCategorias_Inspecciones_IdInspeccion",
+                        column: x => x.IdInspeccion,
+                        principalSchema: "inspeccion",
+                        principalTable: "Inspecciones",
+                        principalColumn: "IdInspeccion",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InspeccionesFicheros",
+                schema: "inspeccion",
+                columns: table => new
+                {
+                    IdInspeccionFichero = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InspeccionFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Orden = table.Column<int>(type: "int", nullable: false),
+                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InspeccionesFicheros", x => x.IdInspeccionFichero);
+                    table.ForeignKey(
+                        name: "FK_InspeccionesFicheros_Inspecciones_IdInspeccion",
                         column: x => x.IdInspeccion,
                         principalSchema: "inspeccion",
                         principalTable: "Inspecciones",
@@ -215,12 +319,14 @@ namespace API.Inspecciones.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdInspeccion = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InspeccionFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdInspeccionCategoria = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     InspeccionCategoriaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdFormularioTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     FormularioTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FormularioValor = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValueAnterior = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -255,115 +361,29 @@ namespace API.Inspecciones.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "InspeccionesUnidadesCategorias",
+            migrationBuilder.CreateIndex(
+                name: "IX_Categorias_IdInspeccionTipo",
                 schema: "inspeccion",
-                columns: table => new
-                {
-                    IdInspeccionUnidadCategoria = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdInspeccionUnidad = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionUnidadFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InspeccionesUnidadesCategorias", x => x.IdInspeccionUnidadCategoria);
-                    table.ForeignKey(
-                        name: "FK_InspeccionesUnidadesCategorias_InspeccionesUnidades_IdInspeccionUnidad",
-                        column: x => x.IdInspeccionUnidad,
-                        principalSchema: "inspeccion",
-                        principalTable: "InspeccionesUnidades",
-                        principalColumn: "IdInspeccionUnidad",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                table: "Categorias",
+                column: "IdInspeccionTipo");
 
-            migrationBuilder.CreateTable(
-                name: "InspeccionesUnidadesFicheros",
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoriasItems_IdCategoria",
                 schema: "inspeccion",
-                columns: table => new
-                {
-                    IdInspeccionUnidadFichero = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdInspeccionUnidad = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionUnidadFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Path = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Orden = table.Column<int>(type: "int", nullable: false),
-                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InspeccionesUnidadesFicheros", x => x.IdInspeccionUnidadFichero);
-                    table.ForeignKey(
-                        name: "FK_InspeccionesUnidadesFicheros_InspeccionesUnidades_IdInspeccionUnidad",
-                        column: x => x.IdInspeccionUnidad,
-                        principalSchema: "inspeccion",
-                        principalTable: "InspeccionesUnidades",
-                        principalColumn: "IdInspeccionUnidad",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                table: "CategoriasItems",
+                column: "IdCategoria");
 
-            migrationBuilder.CreateTable(
-                name: "InspeccionesUnidadesCategoriasItems",
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoriasItems_IdFormularioTipo",
                 schema: "inspeccion",
-                columns: table => new
-                {
-                    IdInspeccionUnidadCategoriaItem = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Descripcion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdInspeccionUnidad = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionUnidadFolio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdInspeccionUnidadCategoria = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    InspeccionUnidadCategoriaName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdFormularioTipo = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FormularioTipoName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FormularioValor = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ValueAnterior = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdCreatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IdUpdatedUser = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedFecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InspeccionesUnidadesCategoriasItems", x => x.IdInspeccionUnidadCategoriaItem);
-                    table.ForeignKey(
-                        name: "FK_InspeccionesUnidadesCategoriasItems_FormulariosTipos_IdFormularioTipo",
-                        column: x => x.IdFormularioTipo,
-                        principalSchema: "inspeccion",
-                        principalTable: "FormulariosTipos",
-                        principalColumn: "IdFormularioTipo",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_InspeccionesUnidadesCategoriasItems_InspeccionesUnidadesCategorias_IdInspeccionUnidadCategoria",
-                        column: x => x.IdInspeccionUnidadCategoria,
-                        principalSchema: "inspeccion",
-                        principalTable: "InspeccionesUnidadesCategorias",
-                        principalColumn: "IdInspeccionUnidadCategoria",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_InspeccionesUnidadesCategoriasItems_InspeccionesUnidades_IdInspeccionUnidad",
-                        column: x => x.IdInspeccionUnidad,
-                        principalSchema: "inspeccion",
-                        principalTable: "InspeccionesUnidades",
-                        principalColumn: "IdInspeccionUnidad",
-                        onDelete: ReferentialAction.Restrict);
-                });
+                table: "CategoriasItems",
+                column: "IdFormularioTipo");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoriasItems_IdInspeccionTipo",
+                schema: "inspeccion",
+                table: "CategoriasItems",
+                column: "IdInspeccionTipo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inspecciones_Folio",
@@ -372,6 +392,18 @@ namespace API.Inspecciones.Migrations
                 column: "Folio",
                 unique: true,
                 filter: "[Folio] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inspecciones_IdInspeccionEstatus",
+                schema: "inspeccion",
+                table: "Inspecciones",
+                column: "IdInspeccionEstatus");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inspecciones_IdInspeccionTipo",
+                schema: "inspeccion",
+                table: "Inspecciones",
+                column: "IdInspeccionTipo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_InspeccionesCategorias_IdInspeccion",
@@ -398,54 +430,18 @@ namespace API.Inspecciones.Migrations
                 column: "IdInspeccionCategoria");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidades_Folio",
+                name: "IX_InspeccionesFicheros_IdInspeccion",
                 schema: "inspeccion",
-                table: "InspeccionesUnidades",
-                column: "Folio",
-                unique: true,
-                filter: "[Folio] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidades_IdInspeccion",
-                schema: "inspeccion",
-                table: "InspeccionesUnidades",
+                table: "InspeccionesFicheros",
                 column: "IdInspeccion");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidades_IdInspeccionUnidadEstatus",
+                name: "IX_InspeccionesTipos_Folio",
                 schema: "inspeccion",
-                table: "InspeccionesUnidades",
-                column: "IdInspeccionUnidadEstatus");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidadesCategorias_IdInspeccionUnidad",
-                schema: "inspeccion",
-                table: "InspeccionesUnidadesCategorias",
-                column: "IdInspeccionUnidad");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidadesCategoriasItems_IdFormularioTipo",
-                schema: "inspeccion",
-                table: "InspeccionesUnidadesCategoriasItems",
-                column: "IdFormularioTipo");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidadesCategoriasItems_IdInspeccionUnidad",
-                schema: "inspeccion",
-                table: "InspeccionesUnidadesCategoriasItems",
-                column: "IdInspeccionUnidad");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidadesCategoriasItems_IdInspeccionUnidadCategoria",
-                schema: "inspeccion",
-                table: "InspeccionesUnidadesCategoriasItems",
-                column: "IdInspeccionUnidadCategoria");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_InspeccionesUnidadesFicheros_IdInspeccionUnidad",
-                schema: "inspeccion",
-                table: "InspeccionesUnidadesFicheros",
-                column: "IdInspeccionUnidad");
+                table: "InspeccionesTipos",
+                column: "Folio",
+                unique: true,
+                filter: "[Folio] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unidades_NumeroEconomico",
@@ -460,15 +456,15 @@ namespace API.Inspecciones.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CategoriasItems",
+                schema: "inspeccion");
+
+            migrationBuilder.DropTable(
                 name: "InspeccionesCategoriasItems",
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
-                name: "InspeccionesUnidadesCategoriasItems",
-                schema: "inspeccion");
-
-            migrationBuilder.DropTable(
-                name: "InspeccionesUnidadesFicheros",
+                name: "InspeccionesFicheros",
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
@@ -476,7 +472,7 @@ namespace API.Inspecciones.Migrations
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
-                name: "InspeccionesCategorias",
+                name: "Categorias",
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
@@ -484,19 +480,19 @@ namespace API.Inspecciones.Migrations
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
-                name: "InspeccionesUnidadesCategorias",
-                schema: "inspeccion");
-
-            migrationBuilder.DropTable(
-                name: "InspeccionesUnidades",
-                schema: "inspeccion");
-
-            migrationBuilder.DropTable(
-                name: "InspeccionesUnidadesEstatus",
+                name: "InspeccionesCategorias",
                 schema: "inspeccion");
 
             migrationBuilder.DropTable(
                 name: "Inspecciones",
+                schema: "inspeccion");
+
+            migrationBuilder.DropTable(
+                name: "InspeccionesEstatus",
+                schema: "inspeccion");
+
+            migrationBuilder.DropTable(
+                name: "InspeccionesTipos",
                 schema: "inspeccion");
         }
     }

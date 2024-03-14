@@ -15,20 +15,28 @@ namespace API.Inspecciones.Services
         {
             _context = context;
         }
+
         public async Task Create(dynamic data, ClaimsPrincipal user)
         {
             var objTransaction = _context.Database.BeginTransaction();
+
+            string categoriaName = Globals.ToUpper(data.name);
+
+            bool findCategoria = await _context.Categorias.AnyAsync(x => x.Name.ToUpper() == categoriaName && !x.Deleted);
+            if (findCategoria) { throw new ArgumentException("Ya existe una categoría con el mismo nombre."); }
 
             CategoriaItem objModel = new CategoriaItem();
 
             objModel.IdCategoriaItem        = Guid.NewGuid().ToString();
             objModel.Name                   = Globals.ToString(data.name);
-            objModel.FormularioTipo         = Globals.ToString(data.formularioTipo);
-            objModel.FormularioValor        = Globals.ToString(data.formularioValor);
+            objModel.Descripcion            = Globals.ToUpper(data.descripcion) ?? "";
+            objModel.FormularioTipo         = Globals.ToUpper(data.formularioTipo);
+            objModel.FormularioValor        = Globals.ToUpper(data.formularioValor);
             objModel.IdInspeccionTipo       = Globals.ParseGuid(data.idInspeccionTipo);
-            objModel.InspeccionTipoName     = Globals.ToString(data.inspeccionTipoName);
+            objModel.InspeccionTipoName     = Globals.ToUpper(data.inspeccionTipoName);
             objModel.IdCategoria            = Globals.ParseGuid(data.idCategoria);
-            objModel.CategoriaName          = Globals.ToString(data.categoriaName);
+            objModel.CategoriaName          = Globals.ToUpper(data.categoriaName);
+            objModel.SetCreated(Globals.GetUser(user));
 
             _context.CategoriasItems.Add(objModel);
             await _context.SaveChangesAsync();
@@ -40,9 +48,23 @@ namespace API.Inspecciones.Services
             throw new NotImplementedException();
         }
 
-        public Task Delete(dynamic data, ClaimsPrincipal user)
+        public async Task Delete(dynamic data, ClaimsPrincipal user)
         {
-            throw new NotImplementedException();
+            var objTransaction = _context.Database.BeginTransaction();
+
+            // ELIMINAR FORMULARIO DE PREGUNTAS
+            string idCategoriaItem = Globals.ParseGuid(data.idCategoriaItem);
+            CategoriaItem objModel = await Find(idCategoriaItem);
+
+            if (objModel == null) { throw new ArgumentException("No se ha encontrado el formulario de preguntas solicitado."); }
+            if (objModel.Deleted) { throw new ArgumentException("El formulario de preguntas ya fue eliminado anteriormente."); }
+
+            objModel.Deleted = true;
+            objModel.SetUpdated(Globals.GetUser(user));
+
+            _context.CategoriasItems.Update(objModel);
+            await _context.SaveChangesAsync();
+            objTransaction.Commit();
         }
 
         public async Task<CategoriaItem> Find(string id)
@@ -79,12 +101,13 @@ namespace API.Inspecciones.Services
 
             CategoriaItem objModel = await Find(idCategoriaItem);
 
-            if (objModel == null) { throw new ArgumentException("No se ha encontrado el formulario de preguntas solicitada."); }
+            if (objModel == null) { throw new ArgumentException("No se ha encontrado el formulario de preguntas solicitado."); }
             if (objModel.Deleted) { throw new ArgumentException("El formulario de preguntas ya fue eliminado anteriormente."); }
 
             objModel.Name               = Globals.ToString(data.name);
-            objModel.FormularioTipo     = Globals.ToString(data.formularioTipo);
-            objModel.FormularioValor    = Globals.ToString(data.formularioValor);
+            objModel.Descripcion        = Globals.ToUpper(data.descripcion) ?? "";
+            objModel.FormularioTipo     = Globals.ToUpper(data.formularioTipo);
+            objModel.FormularioValor    = Globals.ToUpper(data.formularioValor);
             objModel.SetUpdated(Globals.GetUser(user));
 
             _context.CategoriasItems.Update(objModel);

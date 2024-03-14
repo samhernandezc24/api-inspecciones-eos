@@ -43,7 +43,7 @@ namespace API.Inspecciones.Controllers
             return objReturn.build();
         }
 
-        // ENDPOINT PARA APIS EXTERNAS
+        // APIS EXTERNAS
         [HttpPost("StoreFromRequerimientos")]
         public async Task<ActionResult<dynamic>> StoreFromRequerimientos(JsonObject data)
         {

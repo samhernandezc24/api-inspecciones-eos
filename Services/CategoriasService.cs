@@ -24,6 +24,8 @@ namespace API.Inspecciones.Services
             bool isAlreadyExist = await _context.Categorias.AnyAsync(x => x.Name == categoriaName && !x.Deleted);
             if (isAlreadyExist) { throw new ArgumentException("Lo siento, ya existe una categoría con este nombre. Por favor, elige otro nombre."); }
 
+            // TODO(samhernandezc24): AGREGAR VALIDACIÓN EN CASO DE QUE EL IDINSPECCIONTIPO NO EXISTA O ESTE ELIMINADO.
+
             // GUARDAR CATEGORIA
             Categoria objModel = new Categoria();
             objModel.IdCategoria            = Guid.NewGuid().ToString();
@@ -74,12 +76,36 @@ namespace API.Inspecciones.Services
 
         public async Task<List<dynamic>> List()
         {
-            return await _context.Categorias.AsNoTracking().Where(x => !x.Deleted).ToListAsync<dynamic>();
+            return await _context.Categorias
+                                 .AsNoTracking()
+                                 .Where(x => !x.Deleted)
+                                 .OrderByDescending(x => x.CreatedFecha)
+                                 .Select(x => new
+                                 {
+                                     IdCategoria            = x.IdCategoria,
+                                     Name                   = x.Name,
+                                     IdInspeccionTipo       = x.IdInspeccionTipo,
+                                     InspeccionTipoName     = x.InspeccionTipoName,
+                                     InspeccionTipoFolio    = x.InspeccionTipoFolio,
+                                 })
+                                 .ToListAsync<dynamic>();
         }
 
         public async Task<List<dynamic>> ListByIdInspeccionTipo(string idInspeccionTipo)
         {
-            return await _context.Categorias.AsNoTracking().Where(x => x.IdInspeccionTipo == idInspeccionTipo && !x.Deleted).OrderByDescending(x => x.CreatedFecha).ToListAsync<dynamic>();
+            return await _context.Categorias
+                                 .AsNoTracking()
+                                 .Where(x => x.IdInspeccionTipo == idInspeccionTipo && !x.Deleted)
+                                 .OrderByDescending(x => x.CreatedFecha)
+                                 .Select(x => new
+                                 {
+                                     IdCategoria            = x.IdCategoria,
+                                     Name                   = x.Name,
+                                     IdInspeccionTipo       = x.IdInspeccionTipo,
+                                     InspeccionTipoName     = x.InspeccionTipoName,
+                                     InspeccionTipoFolio    = x.InspeccionTipoFolio,
+                                 })
+                                 .ToListAsync<dynamic>();
         }
 
         public Task<byte[]> Reporte(dynamic data)

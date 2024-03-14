@@ -21,11 +21,16 @@ namespace API.Inspecciones.Services
             var objTransaction  = _context.Database.BeginTransaction();
             var displayName     = Globals.ToUpper($"Check List {data.name}");
 
+            string inspeccionTipoName = Globals.ToUpper(data.name);
+
+            bool findInspeccionTipo = await _context.InspeccionesTipos.AnyAsync(x => x.Name.ToUpper() == inspeccionTipoName && !x.Deleted);
+            if (findInspeccionTipo) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo nombre."); }
+
             // GUARDAR TIPO DE INSPECCION
             InspeccionTipo objModel = new InspeccionTipo();
             objModel.IdInspeccionTipo   = Guid.NewGuid().ToString();
             objModel.Folio              = Globals.ToUpper(data.folio);
-            objModel.Name               = Globals.ToUpper(data.name);    
+            objModel.Name               = inspeccionTipoName;    
             objModel.DisplayName        = displayName;
             objModel.Correo             = Globals.ToString(data.correo) ?? "";
             objModel.SetCreated(Globals.GetUser(user));
@@ -71,7 +76,17 @@ namespace API.Inspecciones.Services
 
         public async Task<List<dynamic>> List()
         {
-            return await _context.InspeccionesTipos.AsNoTracking().Where(x => !x.Deleted).OrderByDescending(x => x.CreatedFecha).ToListAsync<dynamic>();
+            return await _context.InspeccionesTipos
+                                 .AsNoTracking()
+                                 .Where(x => !x.Deleted)
+                                 .OrderByDescending(x => x.CreatedFecha)
+                                 .Select(x => new
+                                 {
+                                     IdInspeccionTipo   = x.IdInspeccionTipo,
+                                     Folio              = x.Folio,
+                                     Name               = x.Name,
+                                 })
+                                 .ToListAsync<dynamic>();
         }
 
         public Task<byte[]> Reporte(dynamic data)

@@ -24,7 +24,7 @@ namespace API.Inspecciones.Services
             // GUARDAR INSPECCION DE LA UNIDAD
             Inspeccion objModel = new Inspeccion();
 
-            objModel.IdInspeccionUnidad             = Guid.NewGuid().ToString();
+            objModel.IdInspeccion                   = Guid.NewGuid().ToString();
             objModel.IdBase                         = Globals.ParseGuid(data.idBase);
             objModel.BaseName                       = Globals.ToUpper(data.baseName);
             objModel.IdUnidad                       = Globals.ParseGuid(data.idUnidad);
@@ -33,9 +33,9 @@ namespace API.Inspecciones.Services
             objModel.IdUnidadMarca                  = Globals.ParseGuid(data.idUnidadMarca);
             objModel.UnidadMarcaName                = Globals.ToUpper(data.unidadMarcaName);
             objModel.Fecha                          = DateTime.Now;
-            objModel.IdInspeccion                   = Globals.ParseGuid(data.idInspeccion);
-            objModel.InspeccionFolio                = Globals.ToUpper(data.inspeccionFolio);
-            objModel.InspeccionName                 = Globals.ToUpper(data.inspeccionName);
+            objModel.IdInspeccionTipo               = Globals.ParseGuid(data.idInspeccion);
+            objModel.InspeccionTipoFolio            = Globals.ToUpper(data.inspeccionFolio);
+            objModel.InspeccionTipoName             = Globals.ToUpper(data.inspeccionName);
             objModel.FechaInspeccionInicial         = DateTime.Now;
             objModel.FechaInspeccionInicialUpdate   = DateTime.Now;
             objModel.IdUserInspeccionInicial        = objUser.Id;
@@ -60,14 +60,14 @@ namespace API.Inspecciones.Services
             objModel.Locacion                       = Globals.ToUpper(data.locacion);
             objModel.FirmaOperador                  = Globals.ToUpper(data.firmaOperador);
             objModel.FirmaVerificador               = Globals.ToUpper(data.firmaVerificador);
-
-            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
-            objModel.InspeccionUnidadEstatusName    = "PENDIENTE";
+                
+            objModel.IdInspeccionEstatus            = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
+            objModel.InspeccionEstatusName          = "PENDIENTE";
 
             NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));
 
-            _context.InspeccionesUnidades.Add(objModel);
+            _context.Inspecciones.Add(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();
         }
@@ -77,16 +77,16 @@ namespace API.Inspecciones.Services
             var objUser = Globals.GetUser(user);
             Inspeccion objModel = new Inspeccion();
 
-            objModel.IdInspeccionUnidad             = Guid.NewGuid().ToString();
+            objModel.IdInspeccion                   = Guid.NewGuid().ToString();
             objModel.IdBase                         = Globals.ParseGuid(data.idBase);
             objModel.BaseName                       = Globals.ToUpper(data.baseName);
             objModel.IdUnidad                       = Globals.ParseGuid(data.idUnidad);
             objModel.UnidadNumeroEconomico          = Globals.ToUpper(data.unidadNumeroEconomico);
             objModel.IsUnidadTemporal               = Globals.ParseBool(data.isUnidadTemporal);
             objModel.Fecha                          = DateTime.Now;
-            objModel.IdInspeccion                   = Globals.ParseGuid(data.idInspeccion);
-            objModel.InspeccionFolio                = Globals.ToUpper(data.inspeccionFolio);
-            objModel.InspeccionName                 = Globals.ToUpper(data.inspeccionName);
+            objModel.IdInspeccionTipo               = Globals.ParseGuid(data.idInspeccionTipo);
+            objModel.InspeccionTipoFolio            = Globals.ToUpper(data.inspeccionTipoFolio);
+            objModel.InspeccionTipoName             = Globals.ToUpper(data.inspeccionTipoName);
             objModel.FechaInspeccionInicial         = DateTime.Now;
             objModel.FechaInspeccionInicialUpdate   = DateTime.Now;
             objModel.IdUserInspeccionInicial        = objUser.Id;
@@ -103,14 +103,13 @@ namespace API.Inspecciones.Services
             objModel.Odometro                       = Globals.ParseInt(data.odometro);
             objModel.Horometro                      = Globals.ParseInt(data.horometro);
             objModel.Locacion                       = Globals.ToUpper(data.locacion);
-
-            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
-            objModel.InspeccionUnidadEstatusName    = "PENDIENTE";
+            objModel.IdInspeccionEstatus            = "ea52bdfd-8af6-4f5a-b182-2b99e554eb31";
+            objModel.InspeccionEstatusName          = "PENDIENTE";
 
             NextFolio(ref objModel);
             objModel.SetCreated(Globals.GetUser(user));
 
-            _context.InspeccionesUnidades.Add(objModel);
+            _context.Inspecciones.Add(objModel);
             await _context.SaveChangesAsync();
         }
 
@@ -127,7 +126,7 @@ namespace API.Inspecciones.Services
 
         public int NextIndexKey(string contains)
         {
-            return _context.InspeccionesUnidades.Where(item => item.Folio.Contains(contains)).Count() + 1;
+            return _context.Inspecciones.Where(item => item.Folio.Contains(contains)).Count() + 1;
         }
 
         public Task<dynamic> DataSource(dynamic data, ClaimsPrincipal user)
@@ -144,11 +143,11 @@ namespace API.Inspecciones.Services
         {
             var objTransaction = _context.Database.BeginTransaction();
 
-            string idInspeccionUnidad = Globals.ParseGuid(data.idInspeccionUnidad);
+            string idInspeccion = Globals.ParseGuid(data.idInspeccion);
 
-            Inspeccion objModel = await Find(idInspeccionUnidad);
+            Inspeccion objModel = await Find(idInspeccion);
 
-            switch (objModel.IdInspeccionUnidadEstatus)
+            switch (objModel.IdInspeccionEstatus)
             {
                 case "ea52bdfd-8af6-4f5a-b182-2b99e554eb34":
                     throw new ArgumentException("La inspección de la unidad ya había sido finalizada anteriormente");
@@ -156,8 +155,8 @@ namespace API.Inspecciones.Services
                     throw new ArgumentException("La inspección de la unidad ya había sido cancelada anteriormente");
             }
 
-            objModel.IdInspeccionUnidadEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb34";
-            objModel.InspeccionUnidadEstatusName    = "FINALIZADO";
+            objModel.IdInspeccionEstatus      = "ea52bdfd-8af6-4f5a-b182-2b99e554eb34";
+            objModel.InspeccionEstatusName    = "FINALIZADO";
             objModel.SetUpdated(Globals.GetUser(user));
 
             await _context.SaveChangesAsync();
@@ -166,18 +165,18 @@ namespace API.Inspecciones.Services
 
         public async Task<Inspeccion> Find(string id)
         {
-            return await _context.InspeccionesUnidades.FindAsync(id);
+            return await _context.Inspecciones.FindAsync(id);
         }
 
         public async Task<Inspeccion> FindSelectorById(string id, string fields)
         {
-            return await _context.InspeccionesUnidades.AsNoTracking().Where(x => x.IdInspeccionUnidad == id)
+            return await _context.Inspecciones.AsNoTracking().Where(x => x.IdInspeccion == id)
                             .Select(Globals.BuildSelector<Inspeccion, Inspeccion>(fields)).FirstOrDefaultAsync();
         }
 
         public async Task<List<dynamic>> FindLastInspeccionByIds(List<string> lstIds)
         {
-            var lstResult = await _context.InspeccionesUnidades
+            var lstResult = await _context.Inspecciones
                                 .AsNoTracking()
                                 .Where(x => lstIds.Contains(x.IdUnidad) && !x.Deleted)
                                 .OrderByDescending(x => x.Fecha)
@@ -196,16 +195,46 @@ namespace API.Inspecciones.Services
 
             return lstGroup;
         }
+
         public async Task<List<dynamic>> List()
         {
-            return await _context.InspeccionesUnidades.AsNoTracking().Where(x => !x.Deleted).OrderBy(x => x.Fecha).ToListAsync<dynamic>();
+            return await _context.Inspecciones
+                                 .AsNoTracking()
+                                 .Where(x => !x.Deleted)
+                                 .OrderByDescending(x => x.CreatedFecha)
+                                 .Select(x => new
+                                 {
+                                     IdInspeccion            = x.IdInspeccion,
+                                     //Name                   = x.Name,
+                                     //IdInspeccionTipo       = x.IdInspeccionTipo,
+                                     //InspeccionTipoName     = x.InspeccionTipoName,
+                                     //InspeccionTipoFolio    = x.InspeccionTipoFolio,
+                                 })
+                                 .ToListAsync<dynamic>();
+        }
+
+        public async Task<List<dynamic>> ListByIdInspeccionTipo(string idInspeccionTipo)
+        {
+            return await _context.Categorias
+                                 .AsNoTracking()
+                                 .Where(x => x.IdInspeccionTipo == idInspeccionTipo && !x.Deleted)
+                                 .OrderByDescending(x => x.CreatedFecha)
+                                 .Select(x => new
+                                 {
+                                     IdCategoria            = x.IdCategoria,
+                                     Name                   = x.Name,
+                                     IdInspeccionTipo       = x.IdInspeccionTipo,
+                                     InspeccionTipoName     = x.InspeccionTipoName,
+                                     InspeccionTipoFolio    = x.InspeccionTipoFolio,
+                                 })
+                                 .ToListAsync<dynamic>();
         }
         
         public async Task<List<dynamic>> ListSelector(string id, string fields)
         {
-            return await _context.InspeccionesUnidades
+            return await _context.Inspecciones
                             .AsNoTracking()
-                            .Where(x => x.IdInspeccionUnidad == id && !x.Deleted)
+                            .Where(x => x.IdInspeccion == id && !x.Deleted)
                             .OrderBy(x => x.Fecha)
                             .Select(Globals.BuildSelector<Inspeccion, Inspeccion>(fields))
                             .ToListAsync<dynamic>();
