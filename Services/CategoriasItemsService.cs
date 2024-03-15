@@ -20,22 +20,24 @@ namespace API.Inspecciones.Services
         {
             var objTransaction = _context.Database.BeginTransaction();
 
-            string categoriaName = Globals.ToUpper(data.name);
+            string categoriaItemName = Globals.ToUpper(data.name);
 
-            bool findCategoria = await _context.Categorias.AnyAsync(x => x.Name.ToUpper() == categoriaName && !x.Deleted);
-            if (findCategoria) { throw new ArgumentException("Ya existe una categoría con el mismo nombre."); }
+            bool findCategoriaItem = await _context.CategoriasItems.AnyAsync(x => x.Name.ToUpper() == categoriaItemName && !x.Deleted);
+            if (findCategoriaItem) { throw new ArgumentException("Ya existe una pregunta con este nombre. Por favor, elige otro nombre."); }
 
             CategoriaItem objModel = new CategoriaItem();
 
             objModel.IdCategoriaItem        = Guid.NewGuid().ToString();
-            objModel.Name                   = Globals.ToString(data.name);
+            objModel.Name                   = Globals.ToUpper(data.name);
             objModel.Descripcion            = Globals.ToUpper(data.descripcion) ?? "";
-            objModel.FormularioTipo         = Globals.ToUpper(data.formularioTipo);
-            objModel.FormularioValor        = Globals.ToUpper(data.formularioValor);
+            objModel.FormularioValor        = "";
+            objModel.Orden                  = Globals.ParseInt(data.orden);
             objModel.IdInspeccionTipo       = Globals.ParseGuid(data.idInspeccionTipo);
             objModel.InspeccionTipoName     = Globals.ToUpper(data.inspeccionTipoName);
             objModel.IdCategoria            = Globals.ParseGuid(data.idCategoria);
             objModel.CategoriaName          = Globals.ToUpper(data.categoriaName);
+            objModel.IdFormularioTipo       = Globals.ParseGuid(data.idFormularioTipo);
+            objModel.FormularioTipoName     = Globals.ToUpper(data.formularioTipoName);
             objModel.SetCreated(Globals.GetUser(user));
 
             _context.CategoriasItems.Add(objModel);

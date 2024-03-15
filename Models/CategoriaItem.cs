@@ -26,5 +26,6 @@ namespace API.Inspecciones.Models
         public string FormularioTipoName {  get; set; }
 
         public string FormularioValor { get; set; }
+        public int Orden {  get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace API.Inspecciones.Services
 
             string categoriaName    = Globals.ToUpper(data.name);
             bool isAlreadyExist = await _context.Categorias.AnyAsync(x => x.Name == categoriaName && !x.Deleted);
-            if (isAlreadyExist) { throw new ArgumentException("Lo siento, ya existe una categoría con este nombre. Por favor, elige otro nombre."); }
+            if (isAlreadyExist) { throw new ArgumentException("Ya existe una categoría con este nombre. Por favor, elige otro nombre."); }
 
             // TODO(samhernandezc24): AGREGAR VALIDACIÓN EN CASO DE QUE EL IDINSPECCIONTIPO NO EXISTA O ESTE ELIMINADO.
 

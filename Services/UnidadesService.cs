@@ -32,7 +32,7 @@ namespace API.Inspecciones.Services
             string numeroEconomico = Globals.ToUpper(data.numeroEconomico);
 
             bool findUnidad = await _context.Unidades.AnyAsync(x => x.NumeroEconomico.ToUpper() == numeroEconomico && !x.Deleted);
-            if (findUnidad) { throw new ArgumentException("El número económico que intentas registrar ya existe en la base de datos"); }
+            if (findUnidad) { throw new ArgumentException("Ya existe una unidad con el mismo número económico. Por favor, elige otro número económico."); }
 
             // CREAR UNIDAD TEMPORAL
             Unidad objModel = new Unidad();

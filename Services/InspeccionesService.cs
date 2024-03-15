@@ -21,9 +21,8 @@ namespace API.Inspecciones.Services
             var objUser = Globals.GetUser(user);
             var objTransaction  = _context.Database.BeginTransaction();
 
-            // GUARDAR INSPECCION DE LA UNIDAD
+            // GUARDAR INSPECCION
             Inspeccion objModel = new Inspeccion();
-
             objModel.IdInspeccion                   = Guid.NewGuid().ToString();
             objModel.IdBase                         = Globals.ParseGuid(data.idBase);
             objModel.BaseName                       = Globals.ToUpper(data.baseName);
