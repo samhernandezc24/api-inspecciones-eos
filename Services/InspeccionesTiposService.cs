@@ -21,15 +21,19 @@ namespace API.Inspecciones.Services
             var objTransaction  = _context.Database.BeginTransaction();
             var displayName     = Globals.ToUpper($"Check List {data.name}");
 
-            string inspeccionTipoName = Globals.ToUpper(data.name);
+            string inspeccionTipoFolio  = Globals.ToUpper(data.folio);
+            string inspeccionTipoName   = Globals.ToUpper(data.name);
 
-            bool findInspeccionTipo = await _context.InspeccionesTipos.AnyAsync(x => x.Name.ToUpper() == inspeccionTipoName && !x.Deleted);
-            if (findInspeccionTipo) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo nombre."); }
+            bool findInspeccionTipoFolio = await _context.InspeccionesTipos.AnyAsync(x => x.Folio.ToUpper() == inspeccionTipoFolio && !x.Deleted);
+            bool findInspeccionTipoName  = await _context.InspeccionesTipos.AnyAsync(x => x.Name.ToUpper() == inspeccionTipoName && !x.Deleted);
+
+            if (findInspeccionTipoFolio) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo folio."); }
+            if (findInspeccionTipoName) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo nombre."); }
 
             // GUARDAR TIPO DE INSPECCION
             InspeccionTipo objModel = new InspeccionTipo();
             objModel.IdInspeccionTipo   = Guid.NewGuid().ToString();
-            objModel.Folio              = Globals.ToUpper(data.folio);
+            objModel.Folio              = inspeccionTipoFolio;
             objModel.Name               = inspeccionTipoName;    
             objModel.DisplayName        = displayName;
             objModel.Correo             = Globals.ToString(data.correo) ?? "";
