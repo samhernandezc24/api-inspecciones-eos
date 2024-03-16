@@ -85,6 +85,7 @@ namespace API.Inspecciones.Services
                                      IdInspeccionTipo   = x.IdInspeccionTipo,
                                      Folio              = x.Folio,
                                      Name               = x.Name,
+                                     Correo             = x.Correo,
                                  })
                                  .ToListAsync<dynamic>();
         }
