@@ -101,20 +101,37 @@ namespace API.Inspecciones.Services
 
         public async Task Update(dynamic data, ClaimsPrincipal user)
         {
-            var objTransaction  = _context.Database.BeginTransaction();
-            var displayName     = Globals.ToUpper($"Check List {data.name}");
+            var objTransaction  = _context.Database.BeginTransaction();            
 
             // ACTUALIZAR TIPO DE INSPECCION
-            string idInspeccionTipo = Globals.ParseGuid(data.idInspeccionTipo);
+            string idInspeccionTipo      = Globals.ParseGuid(data.idInspeccionTipo);
+            string inspeccionTipoFolio   = Globals.ToUpper(data.folio);
+            string inspeccionTipoName    = Globals.ToUpper(data.name);
+            string inspeccionDisplayName = Globals.ToUpper($"Check List {inspeccionTipoName}");
 
             InspeccionTipo objModel = await Find(idInspeccionTipo);
 
             if (objModel == null) { throw new ArgumentException("No se ha encontrado el tipo de inspección solicitado."); }
             if (objModel.Deleted) { throw new ArgumentException("El tipo de inspección ya fue eliminado anteriormente."); }
 
-            objModel.Folio          = Globals.ToUpper(data.folio);
-            objModel.Name           = Globals.ToUpper(data.name);
-            objModel.DisplayName    = displayName;
+            bool isFolioModified    = !string.Equals(objModel.Folio, inspeccionTipoFolio, StringComparison.OrdinalIgnoreCase);
+            bool isNameModified     = !string.Equals(objModel.Name, inspeccionTipoName, StringComparison.OrdinalIgnoreCase);
+
+            if (isFolioModified || isNameModified )
+            {
+                bool findInspeccionTipoFolio = await _context.InspeccionesTipos
+                    .AnyAsync(x => x.Folio.ToUpper() == inspeccionTipoFolio && x.IdInspeccionTipo != idInspeccionTipo && !x.Deleted);
+
+                bool findInspeccionTipoName  = await _context.InspeccionesTipos
+                   .AnyAsync(x => x.Name.ToUpper() == inspeccionTipoName && x.IdInspeccionTipo != idInspeccionTipo && !x.Deleted);
+
+                if (findInspeccionTipoFolio) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo folio."); }
+                if (findInspeccionTipoName) { throw new ArgumentException("Ya existe un tipo de inspección con el mismo nombre."); }
+            }                                                     
+
+            objModel.Folio          = inspeccionTipoFolio;
+            objModel.Name           = inspeccionTipoName;
+            objModel.DisplayName    = inspeccionDisplayName;
             objModel.Correo         = Globals.ToString(data.correo) ?? "";
             objModel.SetUpdated(Globals.GetUser(user));
 
