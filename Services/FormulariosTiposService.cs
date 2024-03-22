@@ -1,5 +1,5 @@
 ﻿using API.Inspecciones.Persistence;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Inspecciones.Services
 {
@@ -9,15 +9,15 @@ namespace API.Inspecciones.Services
 
         public FormulariosTiposService(Context context)
         {
-            _context = context;
+            _context    = context;
         }
         
         public async Task<List<dynamic>> List()
         {
             return await _context.FormulariosTipos
                                  .AsNoTracking() 
-                                 .OrderBy(x => x.Orden)
                                  .Where(x => !x.Deleted)
+                                 .OrderBy(x => x.Orden)
                                  .Select(x => new
                                  {
                                      IdFormularioTipo   = x.IdFormularioTipo,

@@ -79,14 +79,26 @@ namespace API.Inspecciones.Services
             return await _context.CategoriasItems.Where(x => x.IdCategoriaItem == id).Select(Globals.BuildSelector<CategoriaItem, CategoriaItem>(fields)).FirstOrDefaultAsync();
         }
 
-        public async Task<List<dynamic>> List()
+        public Task<List<dynamic>> List()
         {
-            return await _context.CategoriasItems.AsNoTracking().Where(x => !x.Deleted).ToListAsync<dynamic>();
+            throw new NotImplementedException();
         }
 
-        public async Task<List<dynamic>> ListByIdCategoria(string idCategoria)
+        public async Task<List<dynamic>> List(string idCategoria)
         {
-            return await _context.CategoriasItems.AsNoTracking().Where(x => x.IdCategoria == idCategoria && !x.Deleted).OrderByDescending(x => x.CreatedFecha).ToListAsync<dynamic>();
+            return await _context.CategoriasItems
+                                 .AsNoTracking()
+                                 .Where(x => x.IdCategoria == idCategoria && !x.Deleted)
+                                 .OrderBy(x => x.Orden)
+                                 .Select(x => new
+                                 {
+                                     IdCategoriaItem        = x.IdCategoriaItem,
+                                     Name                   = x.Name,
+                                     IdFormularioTipo       = x.IdFormularioTipo ?? null,
+                                     FormularioTipoName     = x.FormularioTipoName,
+                                     Edit                   = false,
+                                 })
+                                 .ToListAsync<dynamic>();
         }
 
         public Task<byte[]> Reporte(dynamic data)
@@ -108,13 +120,35 @@ namespace API.Inspecciones.Services
 
             objModel.Name               = Globals.ToString(data.name);
             objModel.Descripcion        = Globals.ToUpper(data.descripcion) ?? "";
+            objModel.IdFormularioTipo   = Globals.ParseGuid(data.idFormularioTipo);
             objModel.FormularioTipo     = Globals.ToUpper(data.formularioTipo);
-            objModel.FormularioValor    = Globals.ToUpper(data.formularioValor);
+            objModel.FormularioValor    = "";
+
+            string formularioValor = "";
+
+            objModel.FormularioValor = formularioValor;
             objModel.SetUpdated(Globals.GetUser(user));
 
             _context.CategoriasItems.Update(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();
+        }
+
+        public async Task UpdateOrden(dynamic data, ClaimsPrincipal user)
+        {
+            var objTransaction = _context.Database.BeginTransaction();
+
+            // ACTUALIZAR EL ORDEN DEL FORMULARIO DE PREGUNTAS
+            string idCategoriaItem = Globals.ParseGuid(data.idCategoriaItem);
+
+            var lstCategoriasItems = _context.CategoriasItems.Where(x => x.IdCategoriaItem == idCategoriaItem).ToList();
+
+            List<CategoriaItem> updateData = new List<CategoriaItem>();
+            int orden = 1;
+            foreach (var item in data.categoriasItems)
+            {
+                
+            }
         }
     }
 }

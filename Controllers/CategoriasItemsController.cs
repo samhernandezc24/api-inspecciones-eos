@@ -11,44 +11,17 @@ namespace API.Inspecciones.Controllers
     public class CategoriasItemsController : ControllerBase
     {
         private readonly CategoriasItemsService _categoriasItemsService;
+        private readonly FormulariosTiposService _formulariosTiposService;
 
-        public CategoriasItemsController(CategoriasItemsService categoriasItemsService)
+        public CategoriasItemsController(CategoriasItemsService categoriasItemsService, FormulariosTiposService formulariosTiposService)
         {
-            _categoriasItemsService = categoriasItemsService;
+            _categoriasItemsService     = categoriasItemsService;
+            _formulariosTiposService    = formulariosTiposService;
         }
 
         [HttpPost("List")]
         [Authorize]
-        public async Task<ActionResult<dynamic>> List()
-        {
-            JsonReturn objReturn = new JsonReturn();
-
-            try
-            {
-                List<dynamic> lstCategoriasItems = await _categoriasItemsService.List();
-
-                objReturn.Result = new
-                {
-                    CategoriasItems = lstCategoriasItems,
-                };
-
-                objReturn.Success(SuccessMessage.REQUEST);
-            }
-            catch (AppException appException)
-            {
-                objReturn.Exception(appException);
-            }
-            catch (Exception exception)
-            {
-                objReturn.Exception(ExceptionMessage.RawException(exception));
-            }
-
-            return objReturn.build();
-        }
-
-        [HttpPost("ListByIdCategoria")]
-        [Authorize]
-        public async Task<ActionResult<dynamic>> ListByIdCategoria(JsonObject data)
+        public async Task<ActionResult<dynamic>> List(JsonObject data)
         {
             JsonReturn objReturn = new JsonReturn();
 
@@ -56,11 +29,13 @@ namespace API.Inspecciones.Controllers
             {
                 var objData             = Globals.JsonData(data);
                 var idCategoria         = Globals.ParseGuid(objData.idCategoria);
-                var lstCategoriasItems  = await _categoriasItemsService.ListByIdCategoria(idCategoria);
+                var lstCategoriasItems  = await _categoriasItemsService.List(idCategoria);
+                var lstFormulariosTipos = await _formulariosTiposService.List();
 
                 objReturn.Result = new
                 {
-                    CategoriasItems = lstCategoriasItems,
+                    CategoriasItems     = lstCategoriasItems,
+                    FormulariosTipos    = lstFormulariosTipos,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
