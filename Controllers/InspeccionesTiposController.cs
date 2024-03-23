@@ -25,11 +25,11 @@ namespace API.Inspecciones.Controllers
 
             try
             {
-                var lstInspeccionesTipos = await _inspeccionesTiposService.List();
+                List<dynamic> lstInspeccionesTipos = await _inspeccionesTiposService.List();
 
                 objReturn.Result = new
                 {
-                    InspeccionesTipos = lstInspeccionesTipos,
+                    inspeccionesTipos = lstInspeccionesTipos,
                 };
 
                 objReturn.Success(SuccessMessage.REQUEST);
@@ -58,8 +58,7 @@ namespace API.Inspecciones.Controllers
             {
                 await _inspeccionesTiposService.Create(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Nuevo tipo de inspección";
-                objReturn.Message   = "Tipo de inspección creado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
@@ -83,8 +82,31 @@ namespace API.Inspecciones.Controllers
             {
                 await _inspeccionesTiposService.Update(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Actualizado";
-                objReturn.Message   = "Tipo de inspección actualizado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
+            }
+            catch (AppException appException)
+            {
+                objReturn.Exception(appException);
+            }
+            catch (Exception exception)
+            {
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
+        [HttpPost("UpdateOrden")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> UpdateOrden(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                await _inspeccionesTiposService.UpdateOrden(Globals.JsonData(data), User);
+
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
@@ -108,8 +130,7 @@ namespace API.Inspecciones.Controllers
             {
                 await _inspeccionesTiposService.Delete(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Eliminado";
-                objReturn.Message   = "Tipo de inspección eliminado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {

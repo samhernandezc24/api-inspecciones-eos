@@ -7,10 +7,11 @@ namespace API.Inspecciones.Models
     {
         [Key]
         public string IdCategoriaItem {  get; set; }
-        public string Name { get; set; }        
-        public string Descripcion { get; set; }
+        public string Name { get; set; }
 
-        // INSPECCION
+        public int Orden { get; set; }
+
+        // INSPECCION TIPO
         public string IdInspeccionTipo {  get; set; }   
         public virtual InspeccionTipo InspeccionTipo { get; set; }
         public string InspeccionTipoName { get; set; }
@@ -23,9 +24,8 @@ namespace API.Inspecciones.Models
         // FORMULARIO TIPO
         public string IdFormularioTipo {  get; set; }
         public virtual FormularioTipo FormularioTipo { get; set; }
-        public string FormularioTipoName {  get; set; }
+        public string FormularioTipoName {  get; set; }        
 
-        public string FormularioValor { get; set; }
-        public int Orden {  get; set; }
+        public string FormularioValor { get; set; }        
     }
 }

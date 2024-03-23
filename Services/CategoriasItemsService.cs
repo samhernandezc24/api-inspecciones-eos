@@ -29,7 +29,6 @@ namespace API.Inspecciones.Services
 
             objModel.IdCategoriaItem        = Guid.NewGuid().ToString();
             objModel.Name                   = Globals.ToUpper(data.name);
-            objModel.Descripcion            = Globals.ToUpper(data.descripcion) ?? "";
             objModel.FormularioValor        = "";
             objModel.Orden                  = Globals.ParseInt(data.orden);
             objModel.IdInspeccionTipo       = Globals.ParseGuid(data.idInspeccionTipo);
@@ -40,7 +39,7 @@ namespace API.Inspecciones.Services
             objModel.FormularioTipoName     = Globals.ToUpper(data.formularioTipoName);
             objModel.SetCreated(Globals.GetUser(user));
 
-            _context.CategoriasItems.Add(objModel);
+            _context.CategoriasItems.AddRange(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();
         }
@@ -119,7 +118,6 @@ namespace API.Inspecciones.Services
             if (objModel.Deleted) { throw new ArgumentException("El formulario de preguntas ya fue eliminado anteriormente."); }
 
             objModel.Name               = Globals.ToString(data.name);
-            objModel.Descripcion        = Globals.ToUpper(data.descripcion) ?? "";
             objModel.IdFormularioTipo   = Globals.ParseGuid(data.idFormularioTipo);
             objModel.FormularioTipo     = Globals.ToUpper(data.formularioTipo);
             objModel.FormularioValor    = "";
