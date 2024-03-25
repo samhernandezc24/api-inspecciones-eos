@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Inspecciones.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20240314020030_migration0")]
+    [Migration("20240325184355_migration0")]
     partial class migration0
     {
         /// <inheritdoc />
@@ -58,6 +58,9 @@ namespace API.Inspecciones.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedFecha")
                         .HasColumnType("datetime2");
 
@@ -88,9 +91,6 @@ namespace API.Inspecciones.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FormularioTipoName")
                         .HasColumnType("nvarchar(max)");
 
@@ -117,6 +117,9 @@ namespace API.Inspecciones.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedFecha")
                         .HasColumnType("datetime2");
@@ -517,6 +520,9 @@ namespace API.Inspecciones.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Orden")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedFecha")
                         .HasColumnType("datetime2");

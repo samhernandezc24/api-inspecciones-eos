@@ -62,8 +62,7 @@ namespace API.Inspecciones.Controllers
             {
                 await _categoriasItemsService.Create(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Nuevo formulario de preguntas";
-                objReturn.Message   = "Formulario de preguntas creado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
@@ -87,8 +86,31 @@ namespace API.Inspecciones.Controllers
             {
                 await _categoriasItemsService.Update(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Actualizado";
-                objReturn.Message   = "Formulario de preguntas actualizado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
+            }
+            catch (AppException appException)
+            {
+                objReturn.Exception(appException);
+            }
+            catch (Exception exception)
+            {
+                objReturn.Exception(ExceptionMessage.RawException(exception));
+            }
+
+            return objReturn.build();
+        }
+
+        [HttpPost("UpdateOrden")]
+        [Authorize]
+        public async Task<ActionResult<dynamic>> UpdateOrden(JsonObject data)
+        {
+            JsonReturn objReturn = new JsonReturn();
+
+            try
+            {
+                await _categoriasItemsService.UpdateOrden(Globals.JsonData(data), User);
+
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {
@@ -112,8 +134,7 @@ namespace API.Inspecciones.Controllers
             {
                 await _categoriasItemsService.Delete(Globals.JsonData(data), User);
 
-                objReturn.Title     = "Eliminado";
-                objReturn.Message   = "Formulario de preguntas eliminado exitosamente";
+                objReturn.Success(SuccessMessage.REQUEST);
             }
             catch (AppException appException)
             {

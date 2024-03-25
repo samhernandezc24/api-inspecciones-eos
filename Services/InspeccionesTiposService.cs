@@ -38,7 +38,6 @@ namespace API.Inspecciones.Services
             objModel.SetCreated(Globals.GetUser(user));
 
             _context.InspeccionesTipos.Add(objModel);
-
             await _context.SaveChangesAsync();
             objTransaction.Commit();
         }
@@ -74,6 +73,7 @@ namespace API.Inspecciones.Services
                 orden++;
             }
 
+            _context.InspeccionesTipos.Update(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();
         }
@@ -147,6 +147,7 @@ namespace API.Inspecciones.Services
             objModel.Correo         = Globals.ToString(data.correo) ?? "";
             objModel.SetUpdated(Globals.GetUser(user));
 
+            _context.InspeccionesTipos.Update(objModel);
             await _context.SaveChangesAsync();
             objTransaction.Commit();
         }
